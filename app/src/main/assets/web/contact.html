@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — EcoTrack</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ═══ ADMIN CITIZEN MESSAGES ═══ */
+    .admin-msg-section {
+      margin: 32px 0 0;
+      background: var(--dark2);
+      border: 1px solid rgba(22,163,74,0.2);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .admin-msg-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 28px; border-bottom: 1px solid rgba(22,163,74,0.15);
+      background: rgba(22,163,74,0.05); flex-wrap: wrap; gap: 12px;
+    }
+    .admin-msg-header-left { display: flex; align-items: center; gap: 14px; }
+    .admin-msg-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(22,163,74,0.15); color: #4ade80;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .admin-msg-title {
+      font-family: 'Syne', sans-serif; font-size: 1.15rem;
+      font-weight: 700; color: #e5f5e0; margin-bottom: 2px;
+    }
+    .admin-msg-sub { font-size: 0.78rem; color: #5a7a54; }
+    .admin-msg-header-right { display: flex; align-items: center; gap: 10px; }
+    .admin-unread-badge {
+      background: #ef4444; color: #fff;
+      font-size: 0.72rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .admin-refresh-btn {
+      background: rgba(22,163,74,0.12); border: 1px solid rgba(22,163,74,0.25);
+      color: #4ade80; padding: 7px 16px; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    }
+    .admin-refresh-btn:hover { background: rgba(22,163,74,0.22); }
+
+    .admin-filter-tabs {
+      display: flex; gap: 6px; padding: 16px 28px 0;
+    }
+    .admin-tab {
+      padding: 7px 18px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+      border: 1.5px solid rgba(255,255,255,0.08); background: transparent;
+      color: #5a7a54; cursor: pointer; transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .admin-tab:hover { border-color: rgba(22,163,74,0.4); color: #4ade80; }
+    .admin-tab.active { background: #16a34a; border-color: #16a34a; color: #fff; }
+
+    .admin-msg-list {
+      padding: 16px 28px 28px;
+      display: flex; flex-direction: column; gap: 12px;
+      max-height: 600px; overflow-y: auto;
+    }
+    .admin-msg-list::-webkit-scrollbar { width: 4px; }
+    .admin-msg-list::-webkit-scrollbar-thumb { background: rgba(22,163,74,0.3); border-radius: 4px; }
+
+    .admin-msg-empty {
+      text-align: center; padding: 40px 20px;
+      color: #4d6848; display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+    }
+    .admin-msg-empty p { font-size: 1rem; font-weight: 600; color: #5a7a54; }
+    .admin-msg-empty span { font-size: 0.82rem; }
+
+    /* Each message card */
+    .admin-msg-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .admin-msg-card:hover { border-color: rgba(22,163,74,0.3); }
+    .admin-msg-card.unread-card { border-color: rgba(22,163,74,0.35); }
+    .admin-msg-card.replied-card { border-color: rgba(255,255,255,0.06); opacity: 0.85; }
+
+    .admin-msg-card-top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 16px 18px 14px; gap: 12px;
+    }
+    .admin-msg-card-left { flex: 1; min-width: 0; }
+    .admin-msg-meta-row {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 7px;
+    }
+    .admin-sender-avatar {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #16a34a, #84cc16);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 800; color: #fff;
+    }
+    .admin-sender-name { font-size: 0.88rem; font-weight: 700; color: #e5f5e0; }
+    .admin-sender-email { font-size: 0.75rem; color: #5a7a54; }
+    .admin-msg-time { font-size: 0.72rem; color: #4d6848; margin-left: auto; white-space: nowrap; }
+    .admin-msg-tag {
+      display: inline-block; padding: 2px 10px; border-radius: 20px;
+      font-size: 0.68rem; font-weight: 700; text-transform: capitalize;
+    }
+    .admin-msg-subject {
+      font-size: 0.9rem; font-weight: 700; color: #c8eabc; margin-bottom: 4px;
+    }
+    .admin-msg-body-text {
+      font-size: 0.83rem; color: #8fa88a; line-height: 1.55;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .admin-msg-card-actions {
+      display: flex; gap: 8px; padding: 0 18px 14px; flex-wrap: wrap;
+    }
+    .admin-reply-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 700; cursor: pointer;
+      border: none; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+      background: #16a34a; color: #fff;
+    }
+    .admin-reply-btn:hover { background: #15803d; }
+    .admin-reply-btn.edit-reply { background: rgba(22,163,74,0.12); border: 1px solid rgba(22,163,74,0.3); color: #4ade80; }
+    .admin-reply-btn.edit-reply:hover { background: rgba(22,163,74,0.22); }
+    .admin-mark-btn {
+      padding: 7px 14px; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04); color: #5a7a54;
+      font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    }
+    .admin-mark-btn:hover { border-color: rgba(22,163,74,0.3); color: #4ade80; }
+    .admin-delete-btn {
+      padding: 7px 14px; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      border: 1px solid rgba(239,68,68,0.2);
+      background: rgba(239,68,68,0.05); color: #f87171;
+      font-family: 'DM Sans', sans-serif; transition: all 0.2s; margin-left: auto;
+    }
+    .admin-delete-btn:hover { background: rgba(239,68,68,0.15); }
+
+    /* Replied preview inside card */
+    .admin-replied-preview {
+      margin: 0 18px 14px;
+      background: rgba(22,163,74,0.08);
+      border: 1px solid rgba(22,163,74,0.2);
+      border-radius: 10px; padding: 10px 14px;
+    }
+    .admin-replied-label {
+      font-size: 0.7rem; font-weight: 700; color: #4ade80;
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+    }
+    .admin-replied-text { font-size: 0.82rem; color: #8fa88a; line-height: 1.5; }
+
+    .unread-dot-badge {
+      display: inline-block; width: 8px; height: 8px;
+      background: #ef4444; border-radius: 50'; flex-shrink: 0;
+      animation: pulse2 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse2 { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* Reply Modal */
+    .reply-modal-box {
+      background: #1a2e18; border: 1px solid rgba(22,163,74,0.25);
+      border-radius: 22px; padding: 32px; max-width: 520px; width: 100%;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .reply-modal-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .reply-modal-title {
+      font-family: 'Syne', sans-serif; font-size: 1.15rem;
+      font-weight: 700; color: #e5f5e0; margin-bottom: 4px;
+    }
+    .reply-modal-sub { font-size: 0.8rem; color: #5a7a54; }
+    .reply-modal-close {
+      background: rgba(255,255,255,0.06); border: none; color: #5a7a54;
+      width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+      font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s;
+    }
+    .reply-modal-close:hover { background: rgba(239,68,68,0.15); color: #f87171; }
+    .reply-modal-preview {
+      background: rgba(22,163,74,0.07); border: 1px solid rgba(22,163,74,0.2);
+      border-radius: 10px; padding: 12px 16px; margin-bottom: 18px;
+      font-size: 0.82rem; color: #8fa88a; line-height: 1.55;
+      max-height: 90px; overflow-y: auto;
+    }
+    .reply-modal-body { margin-bottom: 16px; }
+    .reply-label {
+      display: block; font-size: 0.78rem; font-weight: 700;
+      color: #5a7a54; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
+    }
+    .reply-textarea {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(22,163,74,0.2); border-radius: 12px;
+      padding: 12px 14px; color: #e5f5e0;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      resize: vertical; outline: none; transition: border-color 0.2s; min-height: 110px;
+    }
+    .reply-textarea:focus { border-color: #16a34a; }
+    .reply-char { display: block; text-align: right; font-size: 0.7rem; color: #4d6848; margin-top: 4px; }
+    .reply-modal-actions { display: flex; gap: 10px; }
+    .reply-send-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 12px; background: #16a34a; color: #fff;
+      border: none; border-radius: 12px; font-size: 0.9rem;
+      font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .reply-send-btn:hover { background: #15803d; }
+    .reply-cancel-btn {
+      padding: 12px 20px; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+      color: #5a7a54; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+    }
+    .reply-cancel-btn:hover { border-color: rgba(22,163,74,0.3); color: #4ade80; }
+
+    @media (max-width: 700px) {
+      .admin-msg-header { flex-direction: column; align-items: flex-start; }
+      .admin-msg-list { padding: 12px 16px 20px; }
+      .admin-msg-card-top { flex-direction: column; }
+      .admin-filter-tabs { padding: 12px 16px 0; flex-wrap: wrap; }
+    }
+
+    .admin-contact-section { padding: 32px 0 0; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">♻</span><span>EcoTrack</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="recycle.html">Recycle</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+      <a href="login.html" class="btn btn-primary nav-cta" id="navLoginBtn">Login</a>
+      <button class="hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+    <ul class="mobile-menu" id="mobileMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="features.html">Features</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="recycle.html">Recycle</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-badge">Get in Touch</div>
+      <h1>Let's Work Together</h1>
+      <p>Research collaboration, municipal partnerships, or just a question — we'd love to hear from you.</p>
+    </div>
+  </section>
+
+  <!-- STATS STRIP -->
+  <div class="contact-stats-strip">
+    <div class="container">
+      <div class="contact-stats-row">
+        <div class="cstat"><span class="cstat-num">30+</span><span class="cstat-label">Research Papers Reviewed</span></div>
+        <div class="cstat-div"></div>
+        <div class="cstat"><span class="cstat-num">100+</span><span class="cstat-label">Pilot Households</span></div>
+        <div class="cstat-div"></div>
+        <div class="cstat"><span class="cstat-num">IUB</span><span class="cstat-label">CSE Department</span></div>
+        <div class="cstat-div"></div>
+        <div class="cstat"><span class="cstat-num">Dhaka</span><span class="cstat-label">Bangladesh</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <section class="contact-main-section">
+    <div class="container">
+      <div class="contact-two-col">
+
+        <!-- LEFT -->
+        <div class="contact-left">
+
+          <!-- Researcher card -->
+          <div class="researcher-card">
+            <div class="rc-avatar-wrap">
+              <div class="rc-avatar">MRH</div>
+              <div class="rc-online-dot"></div>
+            </div>
+            <div class="rc-info">
+              <h3 class="rc-name">MD Read Hossain</h3>
+              <span class="rc-role">Lead Researcher &amp; Developer</span>
+              <div class="rc-tags">
+                <span class="rc-tag">IoT</span>
+                <span class="rc-tag">AI / ML</span>
+                <span class="rc-tag">Smart Cities</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info list -->
+          <div class="contact-info-list">
+            <div class="ci2-item">
+              <div class="ci2-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <div class="ci2-body">
+                <span class="ci2-label">Institution</span>
+                <span class="ci2-value">Independent University, Bangladesh (IUB)</span>
+              </div>
+            </div>
+            <div class="ci2-item">
+              <div class="ci2-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              </div>
+              <div class="ci2-body">
+                <span class="ci2-label">Department</span>
+                <span class="ci2-value">Computer Science &amp; Engineering (CSE)</span>
+              </div>
+            </div>
+            <div class="ci2-item">
+              <div class="ci2-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.14 13.5a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.08 3H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 10a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 17z"/></svg>
+              </div>
+              <div class="ci2-body">
+                <span class="ci2-label">Contact</span>
+                <span class="ci2-value">+880 1940-753524</span>
+              </div>
+            </div>
+            <div class="ci2-item">
+              <div class="ci2-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div class="ci2-body">
+                <span class="ci2-label">Location</span>
+                <span class="ci2-value">Bashundhara Residential Area, Dhaka, Bangladesh</span>
+              </div>
+            </div>
+            <div class="ci2-item">
+              <div class="ci2-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <div class="ci2-body">
+                <span class="ci2-label">Research Focus</span>
+                <span class="ci2-value">Smart City Waste Management · IoT · AI · Citizen Engagement</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ -->
+          <div class="faq2-section">
+            <h3 class="faq2-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Frequently Asked Questions
+            </h3>
+            <div class="faq2-list">
+              <div class="faq2-item">
+                <button class="faq2-q" onclick="toggleFAQ(this)">
+                  Is EcoTrack publicly available?
+                  <svg class="faq2-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="faq2-a">Currently, EcoTrack is in pilot phase in the Bashundhara area. We plan to expand based on feedback and municipal partnerships.</div>
+              </div>
+              <div class="faq2-item">
+                <button class="faq2-q" onclick="toggleFAQ(this)">
+                  Can this scale to other cities?
+                  <svg class="faq2-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="faq2-a">Yes. The platform is hardware-independent and designed to scale. It can be deployed in any municipality with minimal configuration changes.</div>
+              </div>
+              <div class="faq2-item">
+                <button class="faq2-q" onclick="toggleFAQ(this)">
+                  Do we need special hardware?
+                  <svg class="faq2-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="faq2-a">No special hardware required. The system works with smartphones and standard GPS trackers. Optional IoT sensors can be integrated later.</div>
+              </div>
+              <div class="faq2-item">
+                <button class="faq2-q" onclick="toggleFAQ(this)">
+                  How can municipalities partner with EcoTrack?
+                  <svg class="faq2-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="faq2-a">Reach out via the contact form selecting "Partnership / Collaboration" — we'll arrange a demo and discuss integration requirements for your city.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT — Form -->
+        <div class="contact-right">
+
+          <!-- ADMIN VIEW — Citizen Messages (replaces "Send a Message" when logged in as Admin) -->
+          <div class="admin-msg-section" id="adminMsgSection" style="display:none; margin-top:0;">
+            <div class="admin-msg-header">
+              <div class="admin-msg-header-left">
+                <div class="admin-msg-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <div>
+                  <h2 class="admin-msg-title">Citizen Messages</h2>
+                  <p class="admin-msg-sub">Messages from citizens via Contact page & User Dashboard</p>
+                </div>
+              </div>
+              <div class="admin-msg-header-right">
+                <span class="admin-unread-badge" id="adminUnreadBadge" style="display:none">0 unread</span>
+                <button class="admin-refresh-btn" onclick="loadAdminMessages()">↻ Refresh</button>
+              </div>
+            </div>
+
+            <!-- Filter tabs -->
+            <div class="admin-filter-tabs">
+              <button class="admin-tab active" onclick="filterMsgs('all', this)">All</button>
+              <button class="admin-tab" onclick="filterMsgs('unread', this)">Unread</button>
+              <button class="admin-tab" onclick="filterMsgs('replied', this)">Replied</button>
+              <button class="admin-tab" onclick="filterMsgs('pending', this)">Pending</button>
+            </div>
+            <div style="padding:12px 28px 0">
+              <input type="text" id="adminSearchInput" oninput="loadAdminMessages()" placeholder="🔍  Search by name, email or message…" style="width:100%;padding:10px 16px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(22,163,74,0.2);border-radius:10px;color:#e5f5e0;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;transition:border-color 0.2s" onfocus="this.style.borderColor='#16a34a'" onblur="this.style.borderColor='rgba(22,163,74,0.2)'">
+            </div>
+
+            <!-- Message list -->
+            <div class="admin-msg-list" id="adminMsgList">
+              <div class="admin-msg-empty" id="adminMsgEmpty">
+                <span style="font-size:2.5rem">📭</span>
+                <p>No citizen messages yet.</p>
+                <span>Messages sent from the Contact page will appear here.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-form-card" id="contactFormCard">
+            <div class="form-card-header">
+              <div class="form-card-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div>
+                <h2 class="form-card-title">Send a Message</h2>
+                <p class="form-card-sub">We respond within 24 hours</p>
+              </div>
+            </div>
+
+            <div class="subject-pills" id="subjectPills">
+              <button class="subj-pill active" onclick="setPill(this,'general')">General</button>
+              <button class="subj-pill" onclick="setPill(this,'partnership')">Partnership</button>
+              <button class="subj-pill" onclick="setPill(this,'feedback')">Feedback</button>
+              <button class="subj-pill" onclick="setPill(this,'technical')">Technical</button>
+              <button class="subj-pill" onclick="setPill(this,'research')">Research</button>
+            </div>
+
+            <form id="contactForm" onsubmit="submitForm(event)">
+              <input type="hidden" id="subjectHidden" name="subject" value="general">
+              <div class="form-row2">
+                <div class="form-group2">
+                  <label>First Name</label>
+                  <input type="text" placeholder="e.g. Rahul" required>
+                </div>
+                <div class="form-group2">
+                  <label>Last Name</label>
+                  <input type="text" placeholder="e.g. Hossain" required>
+                </div>
+              </div>
+              <div class="form-group2">
+                <label>Email Address</label>
+                <div class="input-icon-wrap">
+                  <svg class="input-svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <input type="email" placeholder="your@email.com" required>
+                </div>
+              </div>
+              <div class="form-group2">
+                <label>Organization <span class="label-opt">(optional)</span></label>
+                <div class="input-icon-wrap">
+                  <svg class="input-svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg>
+                  <input type="text" placeholder="e.g. Dhaka North City Corporation">
+                </div>
+              </div>
+              <div class="form-group2">
+                <label>Message</label>
+                <textarea id="message" rows="5" placeholder="Tell us about your interest, question, or feedback..." required></textarea>
+                <span class="char-count" id="charCount">0 / 500</span>
+              </div>
+              <button type="submit" class="form-submit-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Send Message
+              </button>
+            </form>
+
+            <div id="formSuccess" class="form-success2" style="display:none;">
+              <div class="success-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <h4>Message Sent!</h4>
+              <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
+              <a href="user-dashboard.html" id="successDashLink" style="display:none; margin-top:8px; background:#16a34a; color:white; padding:10px 20px; border-radius:10px; font-size:13px; font-weight:700; text-decoration:none;">View in My Dashboard →</a>
+            </div>
+          </div>
+
+          <!-- Partnership CTA -->
+          <div class="partner-cta-card">
+            <span class="pcc-emoji">🤝</span>
+            <div class="pcc-body">
+              <strong>Municipal Partnership</strong>
+              <span>Interested in deploying EcoTrack in your city? Let's talk.</span>
+            </div>
+            <button class="pcc-btn" onclick="setPillByName('partnership'); document.getElementById('message').focus();">Get Started →</button>
+          </div>
+
+          <!-- ── My Sent Messages ── -->
+          <div class="contact-inbox-card" id="contactInbox" style="display:none;">
+            <div class="inbox-header">
+              <div class="inbox-header-left">
+                <div class="inbox-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                <div>
+                  <h3 class="inbox-title">My Sent Messages</h3>
+                  <p class="inbox-sub">Messages you sent via this form</p>
+                </div>
+              </div>
+              <span class="inbox-count-badge" id="inboxCount">0</span>
+            </div>
+            <div class="inbox-thread" id="inboxThread">
+              <div class="inbox-empty" id="inboxEmpty">
+                <span style="font-size:1.8rem">📭</span>
+                <p>No messages yet. Fill out the form above to send one!</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="logo-icon">♻</span>
+          <span class="footer-name">EcoTrack</span>
+          <p>Smart waste management for sustainable cities.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h5>Platform</h5>
+            <a href="features.html">Features</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="recycle.html">Education</a>
+          </div>
+          <div class="footer-col">
+            <h5>Research</h5>
+            <a href="#">Research Paper</a>
+            <a href="#">Methodology</a>
+          </div>
+          <div class="footer-col">
+            <h5>Connect</h5>
+            <a href="contact.html">Contact</a>
+            <a href="#">Feedback</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 EcoTrack · Smart Waste Management Platform</p>
+        <p>Developed by MD READ HOSSAIN | IUB CSE</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <style>
+    /* ── Contact Page Inbox ── */
+    .contact-inbox-card {
+      background: #fff;
+      border: 1.5px solid #d1e8ca;
+      border-radius: 20px;
+      margin-top: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(22,163,74,0.07);
+    }
+    .inbox-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid #e8f5e4;
+      background: #f8fdf6;
+    }
+    .inbox-header-left { display: flex; align-items: center; gap: 12px; }
+    .inbox-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(22,163,74,0.1); color: #16a34a;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .inbox-title {
+      font-family: 'Syne', sans-serif; font-size: 1rem;
+      font-weight: 700; color: #0f1f0d; margin-bottom: 2px;
+    }
+    .inbox-sub { font-size: 0.75rem; color: #5a7053; }
+    .inbox-count-badge {
+      background: #16a34a; color: #fff;
+      font-size: 0.75rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+      min-width: 28px; text-align: center;
+    }
+    .inbox-thread {
+      display: flex; flex-direction: column; gap: 0;
+      max-height: 420px; overflow-y: auto;
+      padding: 12px;
+    }
+    .inbox-thread::-webkit-scrollbar { width: 4px; }
+    .inbox-thread::-webkit-scrollbar-thumb { background: #d1e8ca; border-radius: 4px; }
+    .inbox-empty {
+      text-align: center; padding: 28px 16px;
+      color: #5a7053; display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+    }
+    .inbox-empty p { font-size: 0.85rem; }
+    .inbox-msg {
+      border-radius: 12px; padding: 14px 16px;
+      margin-bottom: 8px; position: relative;
+    }
+    .inbox-msg.sent-msg {
+      background: #16a34a; color: #fff; margin-left: 16px;
+    }
+    .inbox-msg.reply-msg {
+      background: #f0fdf4; border: 1px solid #bbf7d0; margin-right: 16px;
+    }
+    .inbox-msg-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .inbox-msg-who {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .sent-msg .inbox-msg-who { color: rgba(255,255,255,0.8); }
+    .reply-msg .inbox-msg-who { color: #16a34a; }
+    .inbox-msg-time { font-size: 0.68rem; }
+    .sent-msg .inbox-msg-time { color: rgba(255,255,255,0.6); }
+    .reply-msg .inbox-msg-time { color: #5a7053; }
+    .inbox-msg-tag {
+      display: inline-block; padding: 2px 9px; border-radius: 20px;
+      font-size: 0.68rem; font-weight: 700; text-transform: capitalize;
+      margin-bottom: 5px;
+    }
+    .sent-msg .inbox-msg-tag { background: rgba(255,255,255,0.2); color: #fff; }
+    .reply-msg .inbox-msg-tag { background: #bbf7d0; color: #15803d; }
+    .inbox-msg-subject {
+      font-size: 0.82rem; font-weight: 700; margin-bottom: 3px;
+    }
+    .sent-msg .inbox-msg-subject { color: #fff; }
+    .reply-msg .inbox-msg-subject { color: #0f1f0d; }
+    .inbox-msg-body { font-size: 0.83rem; line-height: 1.55; }
+    .sent-msg .inbox-msg-body { color: rgba(255,255,255,0.9); }
+    .reply-msg .inbox-msg-body { color: #1e2d1a; }
+    .inbox-pending {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.15); border-radius: 6px;
+      padding: 4px 10px; margin-top: 8px;
+      font-size: 0.72rem; color: rgba(255,255,255,0.85);
+    }
+    .inbox-pending-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #fbbf24; animation: blink 1.2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .inbox-clear-btn {
+      display: block; width: calc(100% - 24px); margin: 0 12px 12px;
+      padding: 9px; background: none; border: 1.5px solid #d1e8ca;
+      border-radius: 10px; color: #5a7053; font-size: 0.8rem;
+      font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .inbox-clear-btn:hover { border-color: #ef4444; color: #ef4444; }
+  </style>
+  <script>
+    // ── Helpers ──
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    function fmtTime(ts) {
+      if (!ts) return '';
+      const d = new Date(ts), now = new Date(), diff = (now - d) / 1000;
+      if (diff < 60) return 'Just now';
+      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+      return d.toLocaleDateString('en-BD', { day:'numeric', month:'short' });
+    }
+
+    // ── FAQ ──
+    function toggleFAQ(btn) {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq2-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+
+    // ── Subject pills ──
+    function setPill(el, val) {
+      document.querySelectorAll('.subj-pill').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('subjectHidden').value = val;
+    }
+    function setPillByName(val) {
+      document.querySelectorAll('.subj-pill').forEach(p => {
+        p.classList.toggle('active', p.getAttribute('onclick') && p.getAttribute('onclick').includes("'" + val + "'"));
+      });
+      document.getElementById('subjectHidden').value = val;
+    }
+
+    // ── Char counter ──
+    document.getElementById('message').addEventListener('input', function() {
+      const len = Math.min(this.value.length, 500);
+      document.getElementById('charCount').textContent = len + ' / 500';
+      if (this.value.length > 500) this.value = this.value.slice(0, 500);
+    });
+
+    // ── Render Inbox ──
+    function renderInbox() {
+      const all  = JSON.parse(localStorage.getItem('ecotrack_messages') || '[]');
+      const sess = JSON.parse(sessionStorage.getItem('ecotrack_session') || 'null');
+
+      const mine = all.filter(m =>
+        (sess && m.userEmail === sess.email) || m.source === 'contact'
+      );
+
+      const inboxEl = document.getElementById('contactInbox');
+      const thread  = document.getElementById('inboxThread');
+      const badge   = document.getElementById('inboxCount');
+
+      if (mine.length === 0) {
+        inboxEl.style.display = 'none';
+        return;
+      }
+
+      inboxEl.style.display = 'block';
+      badge.textContent = mine.length;
+
+      thread.innerHTML = [...mine].sort((a,b) => b.id - a.id).map(m => {
+        const subj = esc(m.subject || 'Message');
+        const body = esc(m.body || m.text || '');
+        const tag  = esc(m.topic || 'general');
+        const name = esc(m.userName || m.from || 'You');
+        const time = fmtTime(m.timestamp);
+
+        // Build replies thread
+        const replies = m.replies || [];
+        if (m.reply && replies.length === 0) {
+          replies.push({ from: 'admin', text: m.reply, timestamp: m.replyAt });
+        }
+        const repliesHtml = replies.map(r => {
+          const isAdmin = r.from === 'admin';
+          return `<div class="inbox-msg ${isAdmin ? 'reply-msg' : 'sent-msg'}" style="margin-top:6px;${!isAdmin?'margin-left:12px':''}">
+            <div class="inbox-msg-header">
+              <span class="inbox-msg-who">${isAdmin ? '🛡️ Admin' : '👤 ' + name}</span>
+              <span class="inbox-msg-time">${fmtTime(r.timestamp)}</span>
+            </div>
+            <div class="inbox-msg-body">${esc(r.text)}</div>
+          </div>`;
+        }).join('');
+
+        const lastReply = replies[replies.length - 1];
+        const pendingHtml = replies.length === 0
+          ? `<div class="inbox-pending"><span class="inbox-pending-dot"></span> Awaiting admin reply</div>`
+          : (lastReply.from === 'admin' ? `<div class="inbox-pending" style="background:rgba(22,163,74,0.15);color:#16a34a"><span style="width:6px;height:6px;background:#16a34a;border-radius:50%;display:inline-block"></span> Admin replied — you can reply again below</div>` : `<div class="inbox-pending"><span class="inbox-pending-dot"></span> Awaiting admin reply</div>`);
+
+        return `
+          <div class="inbox-msg sent-msg">
+            <div class="inbox-msg-header">
+              <span class="inbox-msg-who">${name}</span>
+              <span class="inbox-msg-time">${time}</span>
+            </div>
+            <span class="inbox-msg-tag">${tag}</span>
+            <div class="inbox-msg-subject">${subj}</div>
+            <div class="inbox-msg-body">${body}</div>
+            ${repliesHtml}
+            ${pendingHtml}
+          </div>`;
+      }).join('');
+
+      // Clear button (add once)
+      if (!document.getElementById('inboxClearBtn')) {
+        const btn = document.createElement('button');
+        btn.id = 'inboxClearBtn';
+        btn.className = 'inbox-clear-btn';
+        btn.textContent = '🗑 Clear My Messages';
+        btn.onclick = () => {
+          if (!confirm('Delete all your sent messages?')) return;
+          const remaining = all.filter(m => !mine.find(x => x.id === m.id));
+          localStorage.setItem('ecotrack_messages', JSON.stringify(remaining));
+          renderInbox();
+        };
+        inboxEl.appendChild(btn);
+      }
+    }
+
+    // ── Submit Form ──
+    function submitForm(e) {
+      e.preventDefault();
+      const inputs      = document.querySelectorAll('#contactForm input[type="text"], #contactForm input[type="email"]');
+      const firstName   = inputs[0]?.value.trim() || '';
+      const lastName    = inputs[1]?.value.trim() || '';
+      const emailVal    = inputs[2]?.value.trim() || '';
+      const org         = inputs[3]?.value.trim() || '';
+      const topic       = document.getElementById('subjectHidden').value || 'general';
+      const messageText = document.getElementById('message').value.trim();
+      const fullName    = (firstName + ' ' + lastName).trim() || 'Anonymous';
+      const sess        = JSON.parse(sessionStorage.getItem('ecotrack_session') || 'null');
+
+      // Validation
+      if (!firstName) { alert('Please enter your first name.'); return; }
+      if (!emailVal && !sess) { alert('Please enter your email address.'); return; }
+      if (!messageText) { alert('Please write a message before sending.'); return; }
+
+      const msg = {
+        id:        Date.now(),
+        userEmail: sess ? sess.email : emailVal,
+        userName:  sess ? sess.name  : fullName,
+        subject:   topic.charAt(0).toUpperCase() + topic.slice(1) + ' Inquiry',
+        body:      messageText,
+        topic:     topic,
+        timestamp: new Date().toISOString(),
+        status:    'unread',
+        adminRead: false,
+        reply:     null,
+        replyAt:   null,
+        source:    'contact',
+        from:      fullName,
+        email:     emailVal || (sess ? sess.email : ''),
+        org:       org
+      };
+
+      const existing = JSON.parse(localStorage.getItem('ecotrack_messages') || '[]');
+      existing.unshift(msg);
+      localStorage.setItem('ecotrack_messages', JSON.stringify(existing));
+
+      // Show success
+      document.getElementById('contactForm').style.display  = 'none';
+      document.getElementById('subjectPills').style.display = 'none';
+      document.getElementById('formSuccess').style.display  = 'flex';
+      if (sess) document.getElementById('successDashLink').style.display = 'inline-block';
+
+      // Refresh inbox
+      renderInbox();
+
+      setTimeout(() => {
+        document.getElementById('formSuccess').style.display  = 'none';
+        document.getElementById('contactForm').style.display  = 'block';
+        document.getElementById('subjectPills').style.display = 'flex';
+        document.getElementById('contactForm').reset();
+        document.getElementById('charCount').textContent = '0 / 500';
+        document.querySelectorAll('.subj-pill').forEach((p,i) => p.classList.toggle('active', i === 0));
+        document.getElementById('subjectHidden').value = 'general';
+      }, 5000);
+    }
+
+    // ── Init ──
+    renderInbox();
+    // Real-time: when admin replies, inbox updates instantly
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'ecotrack_messages') renderInbox();
+    });
+    // Fallback poll every 10s
+    setInterval(renderInbox, 10000);
+  </script>
+  <!-- Reply Modal -->
+  <div id="replyModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:1000;align-items:center;justify-content:center;padding:24px">
+    <div class="reply-modal-box">
+      <div class="reply-modal-header">
+        <div>
+          <h3 class="reply-modal-title" id="replyModalTitle">Reply to Message</h3>
+          <p class="reply-modal-sub" id="replyModalSub"></p>
+        </div>
+        <button class="reply-modal-close" onclick="closeReplyModal()">✕</button>
+      </div>
+      <div class="reply-modal-preview" id="replyModalPreview"></div>
+      <div class="reply-modal-body">
+        <label class="reply-label">Your Reply</label>
+        <textarea id="replyText" class="reply-textarea" rows="5" placeholder="Type your reply to the citizen..."></textarea>
+        <span class="reply-char" id="replyChar">0 / 600</span>
+      </div>
+      <div class="reply-modal-actions">
+        <button class="reply-send-btn" onclick="sendReply()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send Reply
+        </button>
+        <button class="reply-cancel-btn" onclick="closeReplyModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    // ═══ ADMIN MESSAGES SYSTEM (moved here from Dashboard) ═══
+    let currentFilter = 'all';
+    let replyTargetId = null;
+
+    function getAllMessages() {
+      return JSON.parse(localStorage.getItem('ecotrack_messages') || '[]');
+    }
+    function saveAllMessages(msgs) {
+      localStorage.setItem('ecotrack_messages', JSON.stringify(msgs));
+    }
+
+    const TAG_COLORS = {
+      general:     'rgba(99,102,241,0.15)::#818cf8',
+      partnership: 'rgba(251,191,36,0.15)::#fbbf24',
+      feedback:    'rgba(34,211,238,0.15)::#22d3ee',
+      technical:   'rgba(239,68,68,0.15)::#f87171',
+      research:    'rgba(132,204,22,0.15)::#a3e635',
+      complaint:   'rgba(239,68,68,0.15)::#f87171',
+      pickup:      'rgba(22,163,74,0.15)::#4ade80',
+      other:       'rgba(148,163,184,0.15)::#94a3b8',
+    };
+
+    function tagStyle(topic) {
+      const c = TAG_COLORS[topic] || TAG_COLORS.other;
+      const [bg, , fg] = c.split(':');
+      return `background:${bg};color:${fg}`;
+    }
+
+    function isAdminSession() {
+      const sess = JSON.parse(sessionStorage.getItem('ecotrack_session') || 'null');
+      return !!(sess && sess.role === 'admin');
+    }
+
+    function filterMsgs(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      loadAdminMessages();
+    }
+
+    // Guards itself: only Admin-role sessions actually load/mark messages,
+    // so ordinary visitors triggering this (via interval/storage events) are a no-op.
+    function loadAdminMessages() {
+      if (!isAdminSession()) return;
+      const all    = getAllMessages();
+      const unread = all.filter(m => !m.adminRead).length;
+      const badge  = document.getElementById('adminUnreadBadge');
+      badge.style.display  = unread > 0 ? 'inline-block' : 'none';
+      badge.textContent    = unread + ' unread';
+      renderAdminMessages(all, currentFilter);
+    }
+
+    function renderAdminMessages(all, filter) {
+      let msgs = [...all].sort((a, b) => b.id - a.id);
+
+      if (filter === 'unread')  msgs = msgs.filter(m => !m.adminRead);
+      if (filter === 'replied') msgs = msgs.filter(m => m.reply);
+      if (filter === 'pending') msgs = msgs.filter(m => !m.reply);
+
+      // Search filter
+      const searchEl = document.getElementById('adminSearchInput');
+      const q = searchEl ? searchEl.value.trim().toLowerCase() : '';
+      if (q) {
+        msgs = msgs.filter(m => {
+          const name      = (m.userName || m.from || '').toLowerCase();
+          const email     = (m.userEmail || m.email || '').toLowerCase();
+          const emailPfx  = email.split('@')[0].toLowerCase(); // e.g. "user1"
+          const body      = (m.body || m.text || '').toLowerCase();
+          const subj      = (m.subject || '').toLowerCase();
+          return name.includes(q) || email.includes(q) || emailPfx.includes(q) || body.includes(q) || subj.includes(q);
+        });
+      }
+
+      const list = document.getElementById('adminMsgList');
+
+      if (msgs.length === 0) {
+        list.innerHTML = `
+          <div class="admin-msg-empty" style="display:flex">
+            <span style="font-size:2.5rem">📭</span>
+            <p>${q ? 'No results for "' + q + '"' : 'No messages in this filter.'}</p>
+            <span>${q ? 'Try a different search term.' : 'Try switching to "All" to see all messages.'}</span>
+          </div>`;
+        return;
+      }
+
+      list.innerHTML = msgs.map(m => {
+        const name    = esc(m.userName || m.from || 'Unknown');
+        const email   = esc(m.userEmail || m.email || '');
+        const subject = esc(m.subject || 'Message');
+        const body    = esc(m.body || m.text || '');
+        const topic   = m.topic || m.subject || 'general';
+        const time    = fmtTime(m.timestamp);
+        const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        const isUnread  = !m.adminRead;
+        const isReplied = !!m.reply;
+        const source    = m.source === 'contact' ? '<span style="font-size:0.68rem;color:#4d6848;background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:20px;margin-left:4px">via Contact</span>' : '<span style="font-size:0.68rem;color:#4d6848;background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:20px;margin-left:4px">via Dashboard</span>';
+
+        const repliedHtml = (() => {
+          const replies = m.replies || [];
+          if (m.reply && replies.length === 0) {
+            return `<div class="admin-replied-preview">
+               <div class="admin-replied-label">✅ Your reply · ${fmtTime(m.replyAt)}</div>
+               <div class="admin-replied-text">${esc(m.reply)}</div>
+             </div>`;
+          }
+          if (replies.length === 0) return '';
+          return `<div class="admin-replied-preview">
+            <div class="admin-replied-label">💬 Conversation (${replies.length} message${replies.length>1?'s':''})</div>
+            ${replies.map(r => `
+              <div style="margin-top:6px;padding:7px 10px;border-radius:8px;background:${r.from==='admin'?'rgba(22,163,74,0.1)':'rgba(255,255,255,0.05)'};border-left:3px solid ${r.from==='admin'?'#16a34a':'#94a3b8'}">
+                <div style="font-size:11px;font-weight:700;color:${r.from==='admin'?'#4ade80':'#94a3b8'};margin-bottom:3px">
+                  ${r.from==='admin'?'🛡️ You':'👤 Citizen'} · ${fmtTime(r.timestamp)}
+                </div>
+                <div style="font-size:12px;color:#8fa88a">${esc(r.text)}</div>
+              </div>`).join('')}
+          </div>`;
+        })();
+
+        const unreadDot = isUnread
+          ? `<span class="unread-dot-badge" style="width:8px;height:8px;background:#ef4444;border-radius:50%;display:inline-block;animation:pulse2 1.5s infinite"></span>`
+          : '';
+
+        return `
+          <div class="admin-msg-card ${isReplied ? 'replied-card' : 'unread-card'}" id="msgcard-${m.id}">
+            <div class="admin-msg-card-top">
+              <div class="admin-msg-card-left">
+                <div class="admin-msg-meta-row">
+                  <div class="admin-sender-avatar">${initials}</div>
+                  <div>
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <span class="admin-sender-name">${name}</span>
+                      ${unreadDot}
+                      ${source}
+                    </div>
+                    <div class="admin-sender-email">${email}</div>
+                  </div>
+                  <span class="admin-msg-time">${time}</span>
+                </div>
+                <span class="admin-msg-tag" style="${tagStyle(topic)}">${esc(topic)}</span>
+                <div class="admin-msg-subject" style="margin-top:6px">${subject}</div>
+                <div class="admin-msg-body-text">${body}</div>
+              </div>
+            </div>
+            ${repliedHtml}
+            <div class="admin-msg-card-actions">
+              <button class="admin-reply-btn ${isReplied ? 'edit-reply' : ''}" onclick="openReplyModal(${m.id})">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+                ${isReplied ? 'Edit Reply' : 'Reply'}
+              </button>
+              ${!m.adminRead ? `<button class="admin-mark-btn" onclick="markRead(${m.id})">✓ Mark Read</button>` : ''}
+              <button class="admin-delete-btn" onclick="deleteMsg(${m.id})">🗑 Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Mark all as seen (adminRead) once the admin has actually viewed the list
+      const updated = getAllMessages().map(m => ({ ...m, adminRead: true }));
+      saveAllMessages(updated);
+      document.getElementById('adminUnreadBadge').style.display = 'none';
+    }
+
+    function openReplyModal(id) {
+      const all = getAllMessages();
+      const msg = all.find(m => m.id === id);
+      if (!msg) return;
+      replyTargetId = id;
+
+      const name  = msg.userName || msg.from || 'Citizen';
+      const email = msg.userEmail || msg.email || '';
+      document.getElementById('replyModalTitle').textContent = 'Reply to ' + name;
+      document.getElementById('replyModalSub').textContent   = email + ' · ' + (msg.topic || msg.subject || 'General');
+
+      const replies = msg.replies || [];
+      const allMsgs = [{ from:'user', text: msg.body || msg.text, timestamp: msg.timestamp }, ...replies];
+      if (msg.reply && replies.length === 0) allMsgs.push({ from:'admin', text: msg.reply, timestamp: msg.replyAt });
+
+      document.getElementById('replyModalPreview').innerHTML = allMsgs.map(r =>
+        `<div style="margin-bottom:8px;padding:8px 10px;border-radius:8px;background:${r.from==='admin'?'rgba(22,163,74,0.12)':'rgba(255,255,255,0.05)'};border-left:3px solid ${r.from==='admin'?'#4ade80':'#94a3b8'}">
+          <div style="font-size:10px;font-weight:700;color:${r.from==='admin'?'#4ade80':'#94a3b8'};margin-bottom:3px">${r.from==='admin'?'🛡️ You':'👤 '+esc(name)} · ${fmtTime(r.timestamp)}</div>
+          <div style="font-size:12px">${esc(r.text)}</div>
+        </div>`
+      ).join('');
+
+      document.getElementById('replyText').value = '';
+      document.getElementById('replyChar').textContent = '0 / 600';
+
+      document.getElementById('replyModal').style.display = 'flex';
+    }
+
+    function closeReplyModal() {
+      document.getElementById('replyModal').style.display = 'none';
+      replyTargetId = null;
+    }
+
+    document.getElementById('replyText').addEventListener('input', function() {
+      const len = Math.min(this.value.length, 600);
+      document.getElementById('replyChar').textContent = len + ' / 600';
+      if (this.value.length > 600) this.value = this.value.slice(0, 600);
+    });
+
+    function sendReply() {
+      const text = document.getElementById('replyText').value.trim();
+      if (!text) { alert('Please write a reply first.'); return; }
+
+      const all = getAllMessages();
+      const idx = all.findIndex(m => m.id === replyTargetId);
+      if (idx === -1) return;
+
+      if (!all[idx].replies) {
+        all[idx].replies = [];
+        if (all[idx].reply) {
+          all[idx].replies.push({ from: 'admin', text: all[idx].reply, timestamp: all[idx].replyAt });
+        }
+      }
+
+      all[idx].replies.push({ from: 'admin', text, timestamp: new Date().toISOString() });
+
+      all[idx].reply     = text;
+      all[idx].replyAt   = new Date().toISOString();
+      all[idx].adminRead = true;
+
+      saveAllMessages(all);
+      closeReplyModal();
+      loadAdminMessages();
+
+      const t = document.createElement('div');
+      t.textContent = '✅ Reply sent!';
+      t.style.cssText = 'position:fixed;bottom:28px;right:28px;z-index:9999;background:#16a34a;color:#fff;padding:12px 22px;border-radius:12px;font-family:DM Sans,sans-serif;font-size:0.88rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,0.3)';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2500);
+    }
+
+    function markRead(id) {
+      const all = getAllMessages();
+      const idx = all.findIndex(m => m.id === id);
+      if (idx !== -1) { all[idx].adminRead = true; saveAllMessages(all); loadAdminMessages(); }
+    }
+
+    function deleteMsg(id) {
+      if (!confirm('Delete this message permanently?')) return;
+      const all = getAllMessages().filter(m => m.id !== id);
+      saveAllMessages(all);
+      loadAdminMessages();
+    }
+
+    document.getElementById('replyModal').addEventListener('click', function(e) {
+      if (e.target === this) closeReplyModal();
+    });
+
+    // Only reveal & activate the admin panel for an actual Admin session —
+    // ordinary citizens visiting Contact still just see the normal contact form.
+    function initAdminMessagePanel() {
+      if (!isAdminSession()) return;
+      const section  = document.getElementById('adminMsgSection');
+      const formCard = document.getElementById('contactFormCard');
+      const partner  = document.querySelector('.partner-cta-card');
+      const myInbox  = document.getElementById('contactInbox');
+      // Replace the "Send a Message" form with the Citizen Messages panel for Admin
+      if (section)  section.style.display  = 'block';
+      if (formCard) formCard.style.display = 'none';
+      if (partner)  partner.style.display  = 'none';
+      if (myInbox)  myInbox.style.display  = 'none';
+      loadAdminMessages();
+    }
+    document.addEventListener('DOMContentLoaded', initAdminMessagePanel);
+    initAdminMessagePanel();
+
+    // Auto-refresh every 10 seconds (self-guarded — no-op for non-admins)
+    setInterval(loadAdminMessages, 10000);
+
+    // Real-time sync: when a citizen sends/updates a message in another tab, refresh instantly
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'ecotrack_messages' && isAdminSession()) {
+        loadAdminMessages();
+        const section = document.getElementById('adminMsgSection');
+        if (section) {
+          section.style.boxShadow = '0 0 0 3px rgba(22,163,74,0.5)';
+          setTimeout(() => section.style.boxShadow = '', 1500);
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard — EcoTrack</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f0fdf4; }
+    .topbar {
+      background: white; border-bottom: 1px solid #d1fae5;
+      padding: 0 2rem; height: 64px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 2px 12px rgba(22,163,74,0.06);
+    }
+    .topbar-logo { display: flex; align-items: center; gap: 10px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: #16a34a; text-decoration: none; }
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+    .user-chip { display: flex; align-items: center; gap: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 30px; padding: 6px 14px; font-size: 13px; font-weight: 600; color: #15803d; }
+    .user-avatar { width: 28px; height: 28px; background: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700; }
+    .btn-logout { padding: 7px 16px; background: #fee2e2; color: #b91c1c; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    .btn-logout:hover { background: #fecaca; }
+
+    .main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .page-greeting { margin-bottom: 2rem; }
+    .page-greeting h1 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; color: #1f2937; margin-bottom: 4px; }
+    .page-greeting p { color: #6b7280; font-size: 14px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1.1fr; gap: 1.5rem; align-items: start; }
+
+    /* Compose card */
+    .card { background: white; border-radius: 20px; padding: 1.75rem; border: 1px solid #d1fae5; box-shadow: 0 4px 20px rgba(22,163,74,0.06); }
+    .card-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px; }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.25rem; }
+    .pill { padding: 5px 14px; border-radius: 20px; border: 2px solid #e5e7eb; background: white; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; color: #6b7280; }
+    .pill:hover { border-color: #16a34a; color: #16a34a; }
+    .pill.active { background: #16a34a; border-color: #16a34a; color: white; }
+
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: 12px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 5px; }
+    .field input, .field textarea, .field select {
+      width: 100%; padding: 10px 14px; border: 2px solid #e5e7eb;
+      border-radius: 10px; font-size: 14px; font-family: 'DM Sans', sans-serif; transition: border-color 0.2s;
+      resize: none;
+    }
+    .field input:focus, .field textarea:focus { outline: none; border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.08); }
+    .char-count { font-size: 11px; color: #9ca3af; float: right; margin-top: 3px; }
+
+    .btn-send { width: 100%; padding: 12px; background: #16a34a; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-send:hover { background: #15803d; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(22,163,74,0.2); }
+
+    /* Messages thread */
+    .messages-thread { display: flex; flex-direction: column; gap: 12px; max-height: 600px; overflow-y: auto; padding-right: 4px; }
+    .messages-thread::-webkit-scrollbar { width: 4px; }
+    .messages-thread::-webkit-scrollbar-thumb { background: #d1fae5; border-radius: 4px; }
+
+    .msg-bubble { border-radius: 14px; padding: 14px 16px; position: relative; }
+    .msg-bubble.sent { background: #16a34a; color: white; margin-left: 2rem; }
+    .msg-bubble.received { background: white; border: 1px solid #d1fae5; margin-right: 2rem; }
+    .msg-bubble.sent .msg-meta { color: rgba(255,255,255,0.7); }
+    .msg-bubble.received .msg-meta { color: #9ca3af; }
+
+    .msg-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .msg-who { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+    .msg-bubble.sent .msg-who { color: rgba(255,255,255,0.85); }
+    .msg-bubble.received .msg-who { color: #16a34a; }
+    .msg-meta { font-size: 11px; }
+    .msg-tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: capitalize; margin-bottom: 4px; }
+    .msg-bubble.sent .msg-tag { background: rgba(255,255,255,0.2); color: white; }
+    .msg-tag-colored { background: #dbeafe; color: #1d4ed8; }
+    .msg-text { font-size: 14px; line-height: 1.6; }
+    .msg-bubble.received .msg-text { color: #374151; }
+
+    /* Reply bubble */
+    .reply-bubble { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 14px; margin-top: 8px; font-size: 13px; color: #15803d; }
+    .reply-bubble strong { display: block; font-size: 11px; font-weight: 700; margin-bottom: 3px; color: #16a34a; text-transform: uppercase; letter-spacing: 0.04em; }
+    .admin-reply-bubble { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 10px 14px; margin-top: 8px; color: #14532d; }
+    .user-reply-bubble  { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; padding: 10px 14px; margin-top: 8px; color: #fff; margin-left: 16px; }
+    .user-reply-box { margin-top: 10px; background: rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; }
+    .user-reply-input { width: 100%; background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 12px; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 13px; resize: vertical; outline: none; }
+    .user-reply-input:focus { border-color: rgba(255,255,255,0.5); }
+    .user-reply-input::placeholder { color: rgba(255,255,255,0.4); }
+    .user-reply-send-btn { padding: 8px 18px; background: #16a34a; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    .user-reply-send-btn:hover { background: #15803d; }
+    .user-reply-cancel-btn { padding: 8px 14px; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    .user-toggle-reply-btn { margin-top: 10px; padding: 7px 16px; background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2); border-radius: 8px; color: rgba(255,255,255,0.85); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    .user-toggle-reply-btn:hover { background: rgba(255,255,255,0.18); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .empty-thread { text-align: center; padding: 2.5rem 1rem; color: #9ca3af; }
+    .empty-thread .e-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .empty-thread p { font-size: 13px; }
+
+    .unread-dot { display: inline-block; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
+
+    /* Stats strip */
+    .stats-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-mini { background: white; border-radius: 14px; padding: 1rem 1.25rem; border: 1px solid #d1fae5; text-align: center; }
+    .stat-mini .n { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; color: #16a34a; }
+    .stat-mini .l { font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+    /* Toast */
+    #toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: #1f2937; color: white; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif; transform: translateY(20px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { background: #16a34a; }
+
+    @media (max-width: 700px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .stats-strip { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="topbar-logo">
+    <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="14" fill="#16a34a" opacity="0.2"/>
+      <path d="M16 8 L16 24 M10 14 L16 8 L22 14" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    EcoTrack
+  </a>
+  <div class="topbar-right">
+    <div class="user-chip">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <span id="userName">User</span>
+    </div>
+    <button class="btn-logout" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-greeting">
+    <h1>👋 Welcome, <span id="greetName">Citizen</span>!</h1>
+    <p>Send a message to admin or check replies to your previous messages below.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-strip">
+    <div class="stat-mini"><div class="n" id="statSent">0</div><div class="l">Messages Sent</div></div>
+    <div class="stat-mini"><div class="n" id="statReplied">0</div><div class="l">Replies Received</div></div>
+    <div class="stat-mini"><div class="n" id="statPending">0</div><div class="l">Awaiting Reply</div></div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Compose -->
+    <div class="card">
+      <div class="card-title">✉️ Send a Message to Admin</div>
+
+      <div class="pill-row" id="topicPills">
+        <button class="pill active" data-val="general">General</button>
+        <button class="pill" data-val="complaint">Complaint</button>
+        <button class="pill" data-val="pickup">Pickup Request</button>
+        <button class="pill" data-val="feedback">Feedback</button>
+        <button class="pill" data-val="other">Other</button>
+      </div>
+      <input type="hidden" id="topicVal" value="general">
+
+      <div class="field">
+        <label>Subject</label>
+        <input type="text" id="msgSubject" placeholder="Brief subject of your message">
+      </div>
+      <div class="field">
+        <label>Message</label>
+        <textarea id="msgBody" rows="5" placeholder="Describe your issue, request, or feedback in detail..."></textarea>
+        <span class="char-count" id="charCount">0 / 500</span>
+      </div>
+
+      <button class="btn-send" onclick="sendMessage()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send Message
+      </button>
+    </div>
+
+    <!-- Thread -->
+    <div class="card">
+      <div class="card-title">
+        💬 My Messages & Replies
+        <span class="unread-dot" id="unreadDot" style="display:none"></span>
+      </div>
+      <div class="messages-thread" id="msgThread">
+        <div class="empty-thread" id="emptyThread">
+          <div class="e-icon">📭</div>
+          <p>No messages yet. Send your first message to admin!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  // ── Auth guard ──
+  const sess = JSON.parse(sessionStorage.getItem('ecotrack_session') || 'null');
+  if (!sess || sess.role !== 'user') { window.location.href = 'login.html'; }
+
+  const userName = sess ? sess.name : 'User';
+  const userEmail = sess ? sess.email : '';
+  document.getElementById('userName').textContent = userName;
+  document.getElementById('greetName').textContent = userName.split(' ')[0];
+  document.getElementById('userAvatar').textContent = userName[0].toUpperCase();
+
+  function logout() {
+    sessionStorage.removeItem('ecotrack_session');
+    window.location.href = 'login.html';
+  }
+
+  // ── Topic pills ──
+  document.querySelectorAll('#topicPills .pill').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('#topicPills .pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      document.getElementById('topicVal').value = p.dataset.val;
+    });
+  });
+
+  // Char count
+  document.getElementById('msgBody').addEventListener('input', function() {
+    const l = Math.min(this.value.length, 500);
+    document.getElementById('charCount').textContent = l + ' / 500';
+    if (this.value.length > 500) this.value = this.value.slice(0, 500);
+  });
+
+  // ── Data helpers ──
+  function getMessages() { return JSON.parse(localStorage.getItem('ecotrack_messages') || '[]'); }
+  function saveMessages(m) { localStorage.setItem('ecotrack_messages', JSON.stringify(m)); }
+  function myMessages() { return getMessages().filter(m => m.userEmail === userEmail); }
+
+  // ── Send message ──
+  function sendMessage() {
+    const subject = document.getElementById('msgSubject').value.trim();
+    const body    = document.getElementById('msgBody').value.trim();
+    const topic   = document.getElementById('topicVal').value;
+    if (!subject || !body) { toast('Please fill in subject and message.', 'error'); return; }
+
+    const msgs = getMessages();
+    msgs.push({
+      id: Date.now(),
+      userEmail,
+      userName,
+      subject, body, topic,
+      timestamp: new Date().toISOString(),
+      status: 'unread',
+      adminRead: false,
+      reply: null,
+      replyAt: null
+    });
+    saveMessages(msgs);
+
+    document.getElementById('msgSubject').value = '';
+    document.getElementById('msgBody').value = '';
+    document.getElementById('charCount').textContent = '0 / 500';
+    document.querySelectorAll('#topicPills .pill').forEach(p => p.classList.remove('active'));
+    document.querySelector('#topicPills .pill[data-val="general"]').classList.add('active');
+    document.getElementById('topicVal').value = 'general';
+
+    renderThread();
+    updateStats();
+    toast('Message sent to admin!', 'success');
+  }
+
+  // ── Render thread ──
+  function renderThread() {
+    const msgs = myMessages().sort((a,b) => b.id - a.id);
+    const thread = document.getElementById('msgThread');
+    if (!thread) return;
+
+    if (msgs.length === 0) {
+      // Rebuild the empty state fresh each time — never relies on a stale
+      // reference to a node that a previous render may have already replaced.
+      thread.innerHTML = `
+        <div class="empty-thread" id="emptyThread">
+          <div class="e-icon">📭</div>
+          <p>No messages yet. Send your first message to admin!</p>
+        </div>`;
+      const unreadDotEmpty = document.getElementById('unreadDot');
+      if (unreadDotEmpty) unreadDotEmpty.style.display = 'none';
+      return;
+    }
+
+    const topicColors = { general:'#dbeafe:#1d4ed8', complaint:'#fee2e2:#b91c1c', pickup:'#dcfce7:#15803d', feedback:'#f3e8ff:#7e22ce', other:'#f1f5f9:#475569' };
+
+    thread.innerHTML = msgs.map(m => {
+      const [bg, fg] = (topicColors[m.topic] || '#f1f5f9:#475569').split(':');
+      const time = formatTime(m.timestamp);
+      const sourceLabel = m.source === 'contact' ? ' · via Contact Page' : '';
+
+      // Build conversation replies
+      const replies = m.replies || [];
+      // Add legacy single reply as first reply if exists and not already in array
+      if (m.reply && replies.length === 0) {
+        replies.push({ from: 'admin', text: m.reply, timestamp: m.replyAt });
+      }
+
+      const repliesHtml = replies.map((r, idx) => {
+        const isAdmin = r.from === 'admin';
+        return `<div class="reply-bubble ${isAdmin ? 'admin-reply-bubble' : 'user-reply-bubble'}">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+            <strong style="font-size:12px">${isAdmin ? '🛡️ Admin' : '👤 You'}</strong>
+            <span style="font-size:11px;opacity:0.7">${formatTime(r.timestamp)}</span>
+          </div>
+          <div style="font-size:13px;line-height:1.5">${esc(r.text)}</div>
+        </div>`;
+      }).join('');
+
+      // Show reply box if last reply was from admin (or no replies yet but admin replied via legacy)
+      const lastReply = replies[replies.length - 1];
+      const canReply = lastReply && lastReply.from === 'admin';
+      const replyBoxHtml = canReply
+        ? `<div class="user-reply-box" id="replybox-${m.id}" style="display:none">
+            <textarea class="user-reply-input" id="replyinput-${m.id}" placeholder="Type your reply..." rows="3" maxlength="500"></textarea>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="user-reply-send-btn" onclick="sendUserReply(${m.id})">Send Reply →</button>
+              <button class="user-reply-cancel-btn" onclick="toggleReplyBox(${m.id})">Cancel</button>
+            </div>
+          </div>
+          <button class="user-toggle-reply-btn" id="replybtn-${m.id}" onclick="toggleReplyBox(${m.id})">💬 Reply to Admin</button>`
+        : (!lastReply && !m.reply ? '' : '');
+
+      return `
+        <div class="msg-bubble sent">
+          <div class="msg-header">
+            <span class="msg-who">You${sourceLabel}</span>
+            <span class="msg-meta">${time}</span>
+          </div>
+          <span class="msg-tag" style="background:rgba(255,255,255,0.2);color:white">${m.topic}</span>
+          <div style="font-weight:700;font-size:13px;margin-bottom:4px">${esc(m.subject)}</div>
+          <div class="msg-text">${esc(m.body)}</div>
+          ${repliesHtml}
+          ${replies.length === 0 && !m.reply
+            ? `<div style="margin-top:10px;display:flex;align-items:center;gap:6px;font-size:12px;opacity:0.7">
+                <span style="width:7px;height:7px;background:#fbbf24;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite"></span>
+                Awaiting admin reply
+               </div>`
+            : ''}
+          ${replyBoxHtml}
+        </div>
+      `;
+    }).join('');
+
+    const unreplied = msgs.filter(m => !m.reply && (!m.replies || m.replies.length === 0)).length;
+    const unreadDot = document.getElementById('unreadDot');
+    if (unreadDot) unreadDot.style.display = unreplied > 0 ? 'inline-block' : 'none';
+  }
+
+  function toggleReplyBox(msgId) {
+    const box = document.getElementById('replybox-' + msgId);
+    const btn = document.getElementById('replybtn-' + msgId);
+    if (!box) return;
+    const isOpen = box.style.display !== 'none';
+    box.style.display = isOpen ? 'none' : 'block';
+    btn.textContent   = isOpen ? '💬 Reply to Admin' : '✕ Cancel';
+    if (!isOpen) document.getElementById('replyinput-' + msgId)?.focus();
+  }
+
+  function sendUserReply(msgId) {
+    const input = document.getElementById('replyinput-' + msgId);
+    const text  = input?.value.trim();
+    if (!text) { toast('Please write a reply.', 'error'); return; }
+
+    const all = getMessages();
+    const idx = all.findIndex(m => m.id === msgId);
+    if (idx === -1) return;
+
+    if (!all[idx].replies) {
+      all[idx].replies = [];
+      // migrate legacy single reply
+      if (all[idx].reply) {
+        all[idx].replies.push({ from: 'admin', text: all[idx].reply, timestamp: all[idx].replyAt });
+      }
+    }
+
+    all[idx].replies.push({ from: 'user', text, timestamp: new Date().toISOString() });
+    all[idx].adminRead = false; // mark as unread for admin again
+    saveMessages(all);
+
+    input.value = '';
+    toggleReplyBox(msgId);
+    renderThread();
+    updateStats();
+    toast('Reply sent!', 'success');
+  }
+
+  // ── Stats ──
+  function updateStats() {
+    const msgs = myMessages();
+    document.getElementById('statSent').textContent = msgs.length;
+    document.getElementById('statReplied').textContent = msgs.filter(m => m.reply).length;
+    document.getElementById('statPending').textContent = msgs.filter(m => !m.reply).length;
+  }
+
+  // ── Helpers ──
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+  function formatTime(iso) {
+    if (!iso) return '';
+    const d = new Date(iso), now = new Date(), diff = (now-d)/1000;
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+  }
+  function toast(msg, type='success') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show ' + type;
+    setTimeout(() => el.className = '', 3000);
+  }
+
+  // ── Init & auto-refresh ──
+  renderThread();
+  updateStats();
+  setInterval(() => { renderThread(); updateStats(); }, 10000);
+</script>
+</body>
+</html>

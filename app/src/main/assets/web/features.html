@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Features — EcoTrack</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">♻</span><span>EcoTrack</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="features.html" class="active">Features</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="recycle.html">Recycle</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <a href="login.html" class="btn btn-primary nav-cta" id="navLoginBtn">Login</a>
+      <button class="hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+    <ul class="mobile-menu" id="mobileMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="features.html">Features</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="recycle.html">Recycle</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-badge">Platform Features</div>
+      <h1>Everything the Platform Offers</h1>
+      <p>From real-time bin monitoring to AI-powered waste sorting — a complete ecosystem for smart urban waste management.</p>
+    </div>
+  </section>
+
+  <section class="features-main">
+    <div class="container">
+
+      <!-- Feature 1: Bin Monitoring -->
+      <div class="feature-row">
+        <div class="feature-detail">
+          <div class="section-label">Module 01</div>
+          <h3>Smart Bin Status Monitoring</h3>
+          <p>Real-time GPS-tagged fill level updates from every bin in the network. The system triggers automatic alerts when bins reach critical fill levels, ensuring proactive collection before overflow occurs.</p>
+          <p>Municipal authorities and residents can both view live bin status on the dashboard, enabling faster, informed decision-making.</p>
+          <div class="feature-tags">
+            <span class="ftag">GPS Tracking</span>
+            <span class="ftag">Real-time Alerts</span>
+            <span class="ftag">Overflow Prevention</span>
+            <span class="ftag">Admin Dashboard</span>
+          </div>
+        </div>
+        <div class="feature-visual-box">
+          <div class="bin-display" id="binDisplay">
+            <div class="bin-item">
+              <div class="bin-emoji">🗑️</div>
+              <div class="bin-bar" style="height:120px">
+                <div class="bin-fill pct-green" style="height:34%"></div>
+              </div>
+              <span>Zone A · 34%</span>
+            </div>
+            <div class="bin-item">
+              <div class="bin-emoji">🗑️</div>
+              <div class="bin-bar" style="height:120px">
+                <div class="bin-fill pct-orange" style="height:78%"></div>
+              </div>
+              <span>Zone B · 78%</span>
+            </div>
+            <div class="bin-item">
+              <div class="bin-emoji">⚠️</div>
+              <div class="bin-bar" style="height:120px">
+                <div class="bin-fill pct-red" style="height:95%"></div>
+              </div>
+              <span>Zone C · 95% !</span>
+            </div>
+            <div class="bin-item">
+              <div class="bin-emoji">🗑️</div>
+              <div class="bin-bar" style="height:120px">
+                <div class="bin-fill pct-green" style="height:20%"></div>
+              </div>
+              <span>Zone D · 20%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2: Route Optimization -->
+      <div class="feature-row reverse">
+        <div class="feature-detail">
+          <div class="section-label">Module 02</div>
+          <h3>Intelligent Route Optimization</h3>
+          <p>AI-driven routing algorithms calculate the most efficient collection paths for waste collection vehicles. Routes are dynamically updated based on real-time bin fill levels — prioritizing near-full bins automatically.</p>
+          <p>GIS-validated testing from the Bashundhara pilot showed measurable reductions in collection time and fuel consumption.</p>
+          <div class="feature-tags">
+            <span class="ftag">AI Routing</span>
+            <span class="ftag">GIS Mapping</span>
+            <span class="ftag">Fuel Savings</span>
+            <span class="ftag">Dynamic Updates</span>
+          </div>
+        </div>
+        <div class="feature-visual-box">
+          <div class="route-display">
+            <div class="route-stop">
+              <div class="route-stop-icon">🚛</div>
+              <div class="route-stop-info">
+                <strong>Depot — Start</strong>
+                <span>6:30 AM · Bashundhara Block A</span>
+              </div>
+              <span class="route-status status-done">Done</span>
+            </div>
+            <div class="route-stop">
+              <div class="route-stop-icon">📍</div>
+              <div class="route-stop-info">
+                <strong>Bin Cluster — Block C (95%)</strong>
+                <span>7:10 AM · Priority: High</span>
+              </div>
+              <span class="route-status status-active">Active</span>
+            </div>
+            <div class="route-stop">
+              <div class="route-stop-icon">📍</div>
+              <div class="route-stop-info">
+                <strong>Bin Cluster — Block B (78%)</strong>
+                <span>8:00 AM · Priority: Medium</span>
+              </div>
+              <span class="route-status status-next">Next</span>
+            </div>
+            <div class="route-stop">
+              <div class="route-stop-icon">🏭</div>
+              <div class="route-stop-info">
+                <strong>Recycling Center</strong>
+                <span>9:30 AM · Drop-off</span>
+              </div>
+              <span class="route-status status-next">Next</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3: Pickup Scheduling -->
+      <div class="feature-row">
+        <div class="feature-detail">
+          <div class="section-label">Module 03</div>
+          <h3>Waste Pickup Scheduling</h3>
+          <p>Citizens can request waste pickups at their preferred date and time through the mobile or web app. The platform automatically sends confirmation notifications and adds the request to the optimized collection route.</p>
+          <p>This reduces missed pickups, improves resident satisfaction, and ensures data-driven planning for municipal authorities.</p>
+          <div class="feature-tags">
+            <span class="ftag">User Requests</span>
+            <span class="ftag">Auto-scheduling</span>
+            <span class="ftag">Notifications</span>
+            <span class="ftag">Route Integration</span>
+          </div>
+        </div>
+        <div class="feature-visual-box">
+          <div style="color:#e5f5e0">
+            <div style="font-size:0.8rem;color:#8fa88a;margin-bottom:14px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Request Pickup</div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.06)">
+              <div style="font-size:0.78rem;color:#8fa88a;margin-bottom:6px">Date</div>
+              <div style="font-size:0.92rem;font-weight:600">Saturday, Feb 15 2025</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.06)">
+              <div style="font-size:0.78rem;color:#8fa88a;margin-bottom:6px">Time Slot</div>
+              <div style="font-size:0.92rem;font-weight:600">8:00 AM – 10:00 AM</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.06)">
+              <div style="font-size:0.78rem;color:#8fa88a;margin-bottom:6px">Waste Type</div>
+              <div style="font-size:0.92rem;font-weight:600">Recyclable + Organic</div>
+            </div>
+            <div style="background:rgba(22,163,74,0.2);border:1px solid rgba(34,197,94,0.4);border-radius:10px;padding:12px;text-align:center;color:#4ade80;font-weight:700;font-size:0.88rem">
+              ✓ Confirmed — Collector notified
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 4: Admin Dashboard -->
+      <div class="feature-row reverse">
+        <div class="feature-detail">
+          <div class="section-label">Module 04</div>
+          <h3>Administrative Analytics Dashboard</h3>
+          <p>A centralized control panel for municipal authorities with real-time data visualization, bin status maps, collection history, route analytics, and performance KPIs. All the insights needed to run an efficient operation.</p>
+          <p>Empowers data-driven decisions — from dynamic route reallocation to compliance reporting.</p>
+          <div class="feature-tags">
+            <span class="ftag">KPI Tracking</span>
+            <span class="ftag">Data Analytics</span>
+            <span class="ftag">Route Maps</span>
+            <span class="ftag">Reports</span>
+          </div>
+        </div>
+        <div class="feature-visual-box">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:16px;border:1px solid rgba(255,255,255,0.06)">
+              <div style="font-size:0.7rem;color:#8fa88a;font-weight:600;text-transform:uppercase;margin-bottom:6px">Collections Today</div>
+              <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#4ade80">47</div>
+              <div style="font-size:0.72rem;color:#4ade80">↑ +12% vs yesterday</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:16px;border:1px solid rgba(255,255,255,0.06)">
+              <div style="font-size:0.7rem;color:#8fa88a;font-weight:600;text-transform:uppercase;margin-bottom:6px">Active Routes</div>
+              <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#fbbf24">6</div>
+              <div style="font-size:0.72rem;color:#fbbf24">3 in transit</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:16px;border:1px solid rgba(255,255,255,0.06)">
+              <div style="font-size:0.7rem;color:#8fa88a;font-weight:600;text-transform:uppercase;margin-bottom:6px">Bins Near Full</div>
+              <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#ef4444">3</div>
+              <div style="font-size:0.72rem;color:#ef4444">Alert sent</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:16px;border:1px solid rgba(255,255,255,0.06)">
+              <div style="font-size:0.7rem;color:#8fa88a;font-weight:600;text-transform:uppercase;margin-bottom:6px">Recycling Rate</div>
+              <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#a78bfa">62%</div>
+              <div style="font-size:0.72rem;color:#a78bfa">↑ +8% this month</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 5: Recycling Education -->
+      <div class="feature-row">
+        <div class="feature-detail">
+          <div class="section-label">Module 05</div>
+          <h3>Recycling Education & Incentives</h3>
+          <p>An interactive module featuring quizzes, sorting guides, educational videos, and gamified eco-point rewards. Users earn points for correct recycling behavior, which can be redeemed for real-world benefits.</p>
+          <p>This module addresses the gap in existing solutions where citizen engagement fails to sustain long-term participation.</p>
+          <div class="feature-tags">
+            <span class="ftag">Gamification</span>
+            <span class="ftag">Eco-Points</span>
+            <span class="ftag">Quizzes</span>
+            <span class="ftag">Behavior Change</span>
+          </div>
+        </div>
+        <div class="feature-visual-box">
+          <div class="edu-display">
+            <div class="edu-quiz">
+              <h4>❓ Which bin does plastic go in?</h4>
+              <div class="quiz-opts">
+                <div class="qopt">🔵 Organic Waste</div>
+                <div class="qopt correct">♻️ Recyclable Waste ✓</div>
+                <div class="qopt">🔴 Hazardous Waste</div>
+              </div>
+            </div>
+            <div class="edu-pts">
+              <span class="pts-label">Your Eco-Points</span>
+              <span class="pts-num">+250</span>
+              <span style="color:#8fa88a;font-size:0.78rem">🏆 Level 3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 6: AI Sorting -->
+      <div class="feature-row reverse">
+        <div class="feature-detail">
+          <div class="section-label">Module 06</div>
+          <h3>AI-Powered Waste Classification</h3>
+          <p>Machine learning models automatically classify waste types from images or categories, reducing contamination in recycling streams. The system suggests the correct disposal bin for each waste item.</p>
+          <p>Future development will include CNNs and federated learning for enhanced accuracy while preserving data privacy.</p>
+          <div class="feature-tags">
+            <span class="ftag">Computer Vision</span>
+            <span class="ftag">Auto-classification</span>
+            <span class="ftag">ML Model</span>
+            <span class="ftag">Federated Learning</span>
+          </div>
+        </div>
+        <div class="feature-visual-box">
+          <div style="color:#e5f5e0;display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:0.8rem;color:#8fa88a;font-weight:600;text-transform:uppercase;letter-spacing:0.06em">AI Classification Result</div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:16px;border:1px solid rgba(255,255,255,0.06);text-align:center">
+              <div style="font-size:3rem;margin-bottom:8px">🍾</div>
+              <div style="font-size:0.88rem;color:#8fa88a">Detected Item</div>
+              <div style="font-size:1.1rem;font-weight:700;margin:4px 0">Glass Bottle</div>
+            </div>
+            <div style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:14px">
+              <div style="font-size:0.78rem;color:#8fa88a;margin-bottom:4px">Recommended bin</div>
+              <div style="font-size:1rem;font-weight:700;color:#4ade80">♻️ Recyclable Waste</div>
+              <div style="font-size:0.75rem;color:#8fa88a;margin-top:4px">Confidence: 97.3%</div>
+            </div>
+            <div style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:10px;padding:10px;text-align:center;font-size:0.82rem;color:#a78bfa;font-weight:600">
+              +10 Eco-Points earned for correct disposal
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- System Architecture -->
+  <section style="padding:80px 0;background:var(--dark2)">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px">
+        <div class="page-hero-badge">Architecture</div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:#fff;margin-top:12px">Three-Layer System Architecture</h2>
+        <p style="color:#8fa88a;max-width:520px;margin:12px auto 0">Each layer is designed to be modular, scalable, and independently deployable across different urban contexts.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:32px;text-align:center">
+          <div style="font-size:2.5rem;margin-bottom:16px">📱</div>
+          <h3 style="font-family:'Syne',sans-serif;color:#fff;font-weight:700;margin-bottom:12px">Layer 1 — User Interface</h3>
+          <p style="font-size:0.88rem;color:#8fa88a;line-height:1.7">Web & mobile interfaces for residents, waste collectors, and administrators. Pickup requests, bin reporting, education, and reward management.</p>
+        </div>
+        <div style="background:rgba(22,163,74,0.08);border:1px solid rgba(22,163,74,0.25);border-radius:16px;padding:32px;text-align:center">
+          <div style="font-size:2.5rem;margin-bottom:16px">⚙️</div>
+          <h3 style="font-family:'Syne',sans-serif;color:#fff;font-weight:700;margin-bottom:12px">Layer 2 — Collection Management</h3>
+          <p style="font-size:0.88rem;color:#8fa88a;line-height:1.7">Rule-based waste classification, route optimization engine, GPS tracking integration, and scheduling coordination for collection vehicles.</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:32px;text-align:center">
+          <div style="font-size:2.5rem;margin-bottom:16px">📊</div>
+          <h3 style="font-family:'Syne',sans-serif;color:#fff;font-weight:700;margin-bottom:12px">Layer 3 — Admin Dashboard</h3>
+          <p style="font-size:0.88rem;color:#8fa88a;line-height:1.7">Centralized analytics, GIS-based route tracking, bin status monitoring, data exports, and performance KPIs for authorities.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Try the Live Dashboard</h2>
+        <p>Explore how the admin interface and features work in real time.</p>
+        <div class="cta-actions">
+          <a href="dashboard.html" class="btn-primary">Open Dashboard</a>
+          <a href="contact.html" class="btn-ghost-white">Get in Touch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="logo-icon">♻</span>
+          <span class="footer-name">EcoTrack</span>
+          <p>Smart Waste Management Platform for Urban Bangladesh</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h5>Pages</h5>
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="recycle.html">Recycle</a>
+            <a href="contact.html">Contact</a>
+          </div>
+          <div class="footer-col">
+            <h5>Research</h5>
+            <a href="#">Research Paper</a>
+            <a href="#">PRISMA Methodology</a>
+            <a href="#">Pilot Study</a>
+          </div>
+          <div class="footer-col">
+            <h5>Institution</h5>
+            <a href="#">University</a>
+            <a href="#">Bashundhara, Dhaka</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 EcoTrack | Developed by MD READ HOSSAIN - IUB CSE</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

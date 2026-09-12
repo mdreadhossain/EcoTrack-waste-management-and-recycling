@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — EcoTrack</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+</head>
+<body>
+  <script>
+    const _sess = JSON.parse(sessionStorage.getItem('ecotrack_session') || 'null');
+    if (!_sess || _sess.role !== 'admin') {
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">♻</span><span>EcoTrack</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="recycle.html">Recycle</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <a href="#" onclick="logout(); return false;" class="btn btn-primary nav-cta">Logout</a>
+      <button class="hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+    <ul class="mobile-menu" id="mobileMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="features.html">Features</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="recycle.html">Recycle</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-badge">Live Demo</div>
+      <h1>Admin Dashboard</h1>
+      <p>Real-time waste management control panel for municipal authorities. Track bins, manage routes, and analyze performance.</p>
+    </div>
+  </section>
+
+  <section class="dashboard-main">
+    <div class="container">
+
+      <!-- Header row -->
+      <div class="dash-header-row">
+        <div>
+          <h2 class="dash-area-title">Bashundhara Residential Area</h2>
+          <p class="dash-area-sub">Last updated: <span id="lastUpdate">Just now</span></p>
+        </div>
+        <div class="dash-header-actions">
+          <button class="qa-btn icon-btn" onclick="refreshData()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Refresh
+          </button>
+          <button class="qa-btn icon-btn" onclick="alert('Export feature — would generate CSV report')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export
+          </button>
+          <button class="qa-btn icon-btn alert-btn" onclick="alert('Alert sent to 3 collectors!')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Alert Collectors
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="dash-grid" id="kpiGrid">
+        <div class="dash-kpi kpi-green">
+          <div class="kpi-top">
+            <div class="kpi-icon-wrap kpi-icon-green">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <span class="kpi-badge kpi-badge-up">↑ +12%</span>
+          </div>
+          <div class="kpi-value" id="kpi1">47</div>
+          <div class="kpi-label">Collections Today</div>
+          <div class="kpi-sub kpi-up">vs yesterday</div>
+        </div>
+        <div class="dash-kpi kpi-blue">
+          <div class="kpi-top">
+            <div class="kpi-icon-wrap kpi-icon-blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            </div>
+            <span class="kpi-badge kpi-badge-warn">3 alerts</span>
+          </div>
+          <div class="kpi-value" id="kpi2">40</div>
+          <div class="kpi-label">Active Bins</div>
+          <div class="kpi-sub kpi-down">5 need attention</div>
+        </div>
+        <div class="dash-kpi kpi-lime">
+          <div class="kpi-top">
+            <div class="kpi-icon-wrap kpi-icon-lime">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+            </div>
+            <span class="kpi-badge kpi-badge-up">↑ +8%</span>
+          </div>
+          <div class="kpi-value" id="kpi3">62%</div>
+          <div class="kpi-label">Recycling Rate</div>
+          <div class="kpi-sub kpi-up">this month</div>
+        </div>
+        <div class="dash-kpi kpi-purple">
+          <div class="kpi-top">
+            <div class="kpi-icon-wrap kpi-icon-purple">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <span class="kpi-badge kpi-badge-up">Optimized</span>
+          </div>
+          <div class="kpi-value" id="kpi4">87%</div>
+          <div class="kpi-label">Route Efficiency</div>
+          <div class="kpi-sub kpi-up">↑ above target</div>
+        </div>
+      </div>
+
+      <!-- Chart + Quick Actions -->
+      <div class="dash-row">
+        <!-- Real Chart.js weekly collections -->
+        <div class="dash-card">
+          <div class="dash-card-title">
+            Weekly Collections
+            <span>Mon – Sun</span>
+          </div>
+          <div class="chart-legend">
+            <span class="cleg-item"><span class="cleg-dot" style="background:#22c55e"></span>Total Pickups</span>
+            <span class="cleg-item"><span class="cleg-dot" style="background:#86efac"></span>Recycled</span>
+          </div>
+          <div style="position:relative;height:200px;">
+            <canvas id="weeklyChart" role="img" aria-label="Bar chart showing weekly waste collections from Monday to Sunday"></canvas>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dash-card">
+          <div class="dash-card-title">Quick Actions</div>
+          <div class="quick-actions">
+            <button class="qa-btn qa-icon-btn" onclick="alert('New route optimized! 6 stops, est. 2.5 hrs')">
+              <span class="qicon">🗺️</span>
+              Optimize Route
+            </button>
+            <button class="qa-btn qa-icon-btn" onclick="alert('Alert sent to all collectors in Zone C')">
+              <span class="qicon">📢</span>
+              Send Alert
+            </button>
+            <button class="qa-btn qa-icon-btn" onclick="showPickupModal()">
+              <span class="qicon">📅</span>
+              Schedule Pickup
+            </button>
+            <button class="qa-btn qa-icon-btn" onclick="alert('Monthly report generated! 47 pages')">
+              <span class="qicon">📊</span>
+              Gen. Report
+            </button>
+            <button class="qa-btn qa-icon-btn" onclick="alert('3 new citizens joined this week. Total: 847 registered.')">
+              <span class="qicon">👥</span>
+              Citizens
+            </button>
+            <button class="qa-btn qa-icon-btn" onclick="alert('Reward batch of 500 eco-points distributed to top recyclers!')">
+              <span class="qicon">🏆</span>
+              Rewards
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bin Status + Recent Pickups -->
+      <div class="dash-row">
+        <div class="dash-card">
+          <div class="dash-card-title">
+            Live Bin Status
+            <span id="binUpdateTime">Updated 2 min ago</span>
+          </div>
+          <div class="bin-list" id="binList">
+            <div class="bin-row">
+              <span class="bin-row-label">Zone A</span>
+              <div class="bin-progress" role="progressbar" aria-valuenow="34" aria-valuemax="100"><div class="bin-pct pct-green" style="width:34%"></div></div>
+              <span class="bin-pct-label" style="color:var(--green)">34%</span>
+              <span class="bin-status-dot dot-ok"></span>
+            </div>
+            <div class="bin-row">
+              <span class="bin-row-label">Zone B</span>
+              <div class="bin-progress" role="progressbar" aria-valuenow="78" aria-valuemax="100"><div class="bin-pct pct-orange" style="width:78%"></div></div>
+              <span class="bin-pct-label" style="color:#f59e0b">78%</span>
+              <span class="bin-status-dot dot-warn"></span>
+            </div>
+            <div class="bin-row">
+              <span class="bin-row-label" style="color:#ef4444">Zone C ⚠</span>
+              <div class="bin-progress" role="progressbar" aria-valuenow="95" aria-valuemax="100"><div class="bin-pct pct-red" style="width:95%"></div></div>
+              <span class="bin-pct-label" style="color:#ef4444">95%</span>
+              <span class="bin-status-dot dot-crit"></span>
+            </div>
+            <div class="bin-row">
+              <span class="bin-row-label">Zone D</span>
+              <div class="bin-progress" role="progressbar" aria-valuenow="20" aria-valuemax="100"><div class="bin-pct pct-green" style="width:20%"></div></div>
+              <span class="bin-pct-label" style="color:var(--green)">20%</span>
+              <span class="bin-status-dot dot-ok"></span>
+            </div>
+            <div class="bin-row">
+              <span class="bin-row-label">Zone E</span>
+              <div class="bin-progress" role="progressbar" aria-valuenow="61" aria-valuemax="100"><div class="bin-pct pct-orange" style="width:61%"></div></div>
+              <span class="bin-pct-label" style="color:#f59e0b">61%</span>
+              <span class="bin-status-dot dot-warn"></span>
+            </div>
+            <div class="bin-row">
+              <span class="bin-row-label">Zone F</span>
+              <div class="bin-progress" role="progressbar" aria-valuenow="45" aria-valuemax="100"><div class="bin-pct pct-green" style="width:45%"></div></div>
+              <span class="bin-pct-label" style="color:var(--green)">45%</span>
+              <span class="bin-status-dot dot-ok"></span>
+            </div>
+            <div class="bin-row">
+              <span class="bin-row-label" style="color:#ef4444">Zone G ⚠</span>
+              <div class="bin-progress" role="progressbar" aria-valuenow="88" aria-valuemax="100"><div class="bin-pct pct-red" style="width:88%"></div></div>
+              <span class="bin-pct-label" style="color:#ef4444">88%</span>
+              <span class="bin-status-dot dot-crit"></span>
+            </div>
+            <div class="bin-row">
+              <span class="bin-row-label">Zone H</span>
+              <div class="bin-progress" role="progressbar" aria-valuenow="52" aria-valuemax="100"><div class="bin-pct pct-orange" style="width:52%"></div></div>
+              <span class="bin-pct-label" style="color:#f59e0b">52%</span>
+              <span class="bin-status-dot dot-warn"></span>
+            </div>
+            <div class="bin-row">
+              <span class="bin-row-label">Zone I</span>
+              <div class="bin-progress" role="progressbar" aria-valuenow="15" aria-valuemax="100"><div class="bin-pct pct-green" style="width:15%"></div></div>
+              <span class="bin-pct-label" style="color:var(--green)">15%</span>
+              <span class="bin-status-dot dot-ok"></span>
+            </div>
+            <div class="bin-row">
+              <span class="bin-row-label">Zone J</span>
+              <div class="bin-progress" role="progressbar" aria-valuenow="70" aria-valuemax="100"><div class="bin-pct pct-orange" style="width:70%"></div></div>
+              <span class="bin-pct-label" style="color:#f59e0b">70%</span>
+              <span class="bin-status-dot dot-warn"></span>
+            </div>
+          </div>
+          <button class="qa-btn simulate-btn" onclick="simulateBinUpdate()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Simulate Live Update
+          </button>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-title">
+            Recent Pickups
+            <span>Last 24 hrs</span>
+          </div>
+          <div class="pickup-list">
+            <div class="pickup-item">
+              <div class="pickup-avatar">RH</div>
+              <div class="pickup-info">
+                <strong>Rahul Hossain — Block C-12</strong>
+                <span>Organic + Recyclable · 9:15 AM</span>
+              </div>
+              <span class="pickup-badge badge-done">Completed</span>
+            </div>
+            <div class="pickup-item">
+              <div class="pickup-avatar av-blue">SA</div>
+              <div class="pickup-info">
+                <strong>Sabina Akter — Block A-04</strong>
+                <span>Mixed Waste · 10:30 AM</span>
+              </div>
+              <span class="pickup-badge badge-transit">In Transit</span>
+            </div>
+            <div class="pickup-item">
+              <div class="pickup-avatar av-orange">MK</div>
+              <div class="pickup-info">
+                <strong>Mohammed Karim — Block B-07</strong>
+                <span>Recyclable Only · 11:00 AM</span>
+              </div>
+              <span class="pickup-badge badge-pending">Pending</span>
+            </div>
+            <div class="pickup-item">
+              <div class="pickup-avatar">FN</div>
+              <div class="pickup-info">
+                <strong>Fatema Noor — Block D-15</strong>
+                <span>Hazardous · 8:00 AM</span>
+              </div>
+              <span class="pickup-badge badge-done">Completed</span>
+            </div>
+            <div class="pickup-item">
+              <div class="pickup-avatar av-orange">AR</div>
+              <div class="pickup-info">
+                <strong>Anwar Rahman — Block E-02</strong>
+                <span>Organic Waste · 12:30 PM</span>
+              </div>
+              <span class="pickup-badge badge-pending">Pending</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GPS Route Map — Real Map (Leaflet + OpenStreetMap) -->
+      <div class="dash-card gps-card">
+        <div class="dash-card-title">
+          GPS Route Map — Active Collection
+          <span class="live-indicator">
+            <span class="live-dot"></span>
+            10 trucks active
+          </span>
+        </div>
+
+        <!-- Road Search Bar -->
+        <div class="road-search-bar">
+          <div class="road-search-input-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="roadSearchInput" placeholder="Search by zone or truck number (e.g. Zone A, T3, T10)..." oninput="searchRoad(this.value)" autocomplete="off"/>
+            <button class="road-search-clear" id="searchClearBtn" onclick="clearSearch()" style="display:none;">✕</button>
+          </div>
+          <div class="road-search-suggestions" id="searchSuggestions"></div>
+        </div>
+
+        <!-- Search result info panel -->
+        <div class="road-result-panel" id="roadResultPanel" style="display:none;">
+          <div class="rrp-inner" id="roadResultContent"></div>
+          <button class="rrp-close" onclick="clearSearch()">✕ Clear</button>
+        </div>
+
+        <div class="gps-map-container" id="gpsMapContainer">
+          <div id="realMap" style="width:100%; height:100%; border-radius:14px;"></div>
+
+          <!-- Map Legend -->
+          <div class="map-legend">
+            <div class="map-legend-item"><span class="map-legend-dot" style="background:#16a34a"></span>Bin OK (&lt;60%)</div>
+            <div class="map-legend-item"><span class="map-legend-dot" style="background:#f59e0b"></span>Bin warning (60–80%)</div>
+            <div class="map-legend-item"><span class="map-legend-dot" style="background:#ef4444"></span>Near full (&gt;80%)</div>
+            <div class="map-legend-item"><span class="map-legend-dot" style="background:#22c55e"></span>Truck en route / collecting</div>
+            <div class="map-legend-item"><span class="map-legend-dot" style="background:#ef4444"></span>Truck urgent</div>
+            <div class="map-legend-item"><span class="map-legend-line" style="background:repeating-linear-gradient(90deg,#22c55e 0 6px,transparent 6px 11px)"></span>Selected truck's route</div>
+          </div>
+
+          <!-- Live tag -->
+          <div class="map-live-tag">
+            <span class="live-dot"></span>
+            Live GPS · Bashundhara Zone
+            <select id="myVehicleSelect" class="my-vehicle-select" onchange="if(this.value) selectTruck(this.value); this.selectedIndex=0;">
+              <option value="">🚛 My Vehicle — select to locate</option>
+              <option value="T1">T1</option>
+              <option value="T2">T2</option>
+              <option value="T3">T3</option>
+              <option value="T4">T4</option>
+              <option value="T5">T5</option>
+              <option value="T6">T6</option>
+              <option value="T7">T7</option>
+              <option value="T8">T8</option>
+              <option value="T9">T9</option>
+              <option value="T10">T10</option>
+            </select>
+          </div>
+        </div>
+
+        <p style="margin-top:12px; font-size:13px; color:rgba(255,255,255,0.45);">
+          This is a real interactive map (OpenStreetMap) centered on the actual Bashundhara Residential Area pilot zone in Dhaka. Truck and bin markers below are pinned to real streets in that neighborhood — search or use "My Vehicle" above to fly straight to any one of them.
+        </p>
+      </div>
+
+      <!-- Bottom 3-col cards -->
+      <div class="dash-bottom-grid">
+        <!-- Top Recyclers -->
+        <div class="dash-card">
+          <div class="dash-card-title">Top Recyclers
+            <span>This month</span>
+          </div>
+          <div class="recycler-list">
+            <div class="recycler-row">
+              <span class="recycler-rank rank-gold">1</span>
+              <div class="recycler-info">
+                <span class="recycler-name">Fatema Noor</span>
+                <div class="recycler-bar-wrap"><div class="recycler-bar" style="width:92%;background:#22c55e"></div></div>
+              </div>
+              <span class="recycler-pts">920 pts</span>
+            </div>
+            <div class="recycler-row">
+              <span class="recycler-rank rank-silver">2</span>
+              <div class="recycler-info">
+                <span class="recycler-name">Rahul Hossain</span>
+                <div class="recycler-bar-wrap"><div class="recycler-bar" style="width:76%;background:#22c55e"></div></div>
+              </div>
+              <span class="recycler-pts">760 pts</span>
+            </div>
+            <div class="recycler-row">
+              <span class="recycler-rank rank-bronze">3</span>
+              <div class="recycler-info">
+                <span class="recycler-name">Anwar Rahman</span>
+                <div class="recycler-bar-wrap"><div class="recycler-bar" style="width:64%;background:#84cc16"></div></div>
+              </div>
+              <span class="recycler-pts">640 pts</span>
+            </div>
+            <div class="recycler-row">
+              <span class="recycler-rank rank-normal">4</span>
+              <div class="recycler-info">
+                <span class="recycler-name">Sabina Akter</span>
+                <div class="recycler-bar-wrap"><div class="recycler-bar" style="width:48%;background:#84cc16;opacity:0.6"></div></div>
+              </div>
+              <span class="recycler-pts">480 pts</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Waste Breakdown -->
+        <div class="dash-card">
+          <div class="dash-card-title">Waste Breakdown
+            <span>By category</span>
+          </div>
+          <div class="waste-breakdown-list">
+            <div class="wb-row">
+              <div class="wb-label-row">
+                <span class="wb-dot" style="background:#84cc16"></span>
+                <span class="wb-name">Organic</span>
+                <span class="wb-pct">42%</span>
+              </div>
+              <div class="wb-bar-wrap"><div class="wb-bar" style="width:42%;background:#84cc16"></div></div>
+            </div>
+            <div class="wb-row">
+              <div class="wb-label-row">
+                <span class="wb-dot" style="background:#22c55e"></span>
+                <span class="wb-name">Recyclable</span>
+                <span class="wb-pct">31%</span>
+              </div>
+              <div class="wb-bar-wrap"><div class="wb-bar" style="width:31%;background:#22c55e"></div></div>
+            </div>
+            <div class="wb-row">
+              <div class="wb-label-row">
+                <span class="wb-dot" style="background:#94a3b8"></span>
+                <span class="wb-name">Mixed/General</span>
+                <span class="wb-pct">19%</span>
+              </div>
+              <div class="wb-bar-wrap"><div class="wb-bar" style="width:19%;background:#94a3b8"></div></div>
+            </div>
+            <div class="wb-row">
+              <div class="wb-label-row">
+                <span class="wb-dot" style="background:#ef4444"></span>
+                <span class="wb-name">Hazardous</span>
+                <span class="wb-pct">8%</span>
+              </div>
+              <div class="wb-bar-wrap"><div class="wb-bar" style="width:8%;background:#ef4444"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="dash-card">
+          <div class="dash-card-title">System Status
+            <span class="sys-all-ok">● All systems</span>
+          </div>
+          <div class="sys-list">
+            <div class="sys-row">
+              <span class="sys-name">GPS Tracking</span>
+              <span class="sys-badge sys-active">Active</span>
+            </div>
+            <div class="sys-row">
+              <span class="sys-name">Route Engine</span>
+              <span class="sys-badge sys-active">Active</span>
+            </div>
+            <div class="sys-row">
+              <span class="sys-name">Notifications</span>
+              <span class="sys-badge sys-active">Active</span>
+            </div>
+            <div class="sys-row">
+              <span class="sys-name">AI Classifier</span>
+              <span class="sys-badge sys-training">Training</span>
+            </div>
+            <div class="sys-row">
+              <span class="sys-name">Bin Sensors</span>
+              <span class="sys-badge sys-active">34 Online</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div id="pickupModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;align-items:center;justify-content:center;padding:24px">
+    <div class="modal-box">
+      <h3 class="modal-title">Schedule Pickup</h3>
+      <div class="form-group">
+        <label>Location / Block</label>
+        <input type="text" placeholder="e.g. Block C-12, Bashundhara"/>
+      </div>
+      <div class="form-group">
+        <label>Preferred Date</label>
+        <input type="date"/>
+      </div>
+      <div class="form-group">
+        <label>Waste Type</label>
+        <select><option>Organic</option><option>Recyclable</option><option>Mixed</option><option>Hazardous</option></select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary modal-confirm" onclick="submitPickup()">Confirm Pickup</button>
+        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="logo-icon">♻</span>
+          <span class="footer-name">EcoTrack</span>
+          <p>Smart Waste Management Platform for Urban Bangladesh</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h5>Pages</h5>
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="recycle.html">Recycle</a>
+            <a href="contact.html">Contact</a>
+          </div>
+          <div class="footer-col">
+            <h5>Research</h5>
+            <a href="#">Research Paper</a>
+            <a href="#">Pilot Study</a>
+          </div>
+          <div class="footer-col">
+            <h5>Institution</h5>
+            <a href="#">IUB CSE</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 EcoTrack | Developed by MD READ HOSSAIN - IUB CSE</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Chart.js — Weekly Collections
+    (function() {
+      const ctx = document.getElementById('weeklyChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [
+            {
+              label: 'Total Pickups',
+              data: [38, 52, 34, 61, 70, 45, 58],
+              backgroundColor: '#22c55e',
+              borderRadius: 6,
+              borderSkipped: false,
+            },
+            {
+              label: 'Recycled',
+              data: [22, 31, 18, 40, 51, 28, 36],
+              backgroundColor: '#86efac',
+              borderRadius: 6,
+              borderSkipped: false,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0f1f0d',
+              titleColor: '#86efac',
+              bodyColor: '#a8c8a0',
+              padding: 12,
+              cornerRadius: 8,
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(209,232,202,0.3)' },
+              ticks: { color: '#5a7053', font: { size: 11 } },
+              border: { display: false }
+            },
+            y: {
+              grid: { color: 'rgba(209,232,202,0.3)' },
+              ticks: { color: '#5a7053', font: { size: 11 }, stepSize: 20 },
+              border: { display: false },
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    })();
+
+    function showPickupModal() {
+      const m = document.getElementById('pickupModal');
+      m.style.display = 'flex';
+    }
+    function closeModal() {
+      document.getElementById('pickupModal').style.display = 'none';
+    }
+    function submitPickup() {
+      closeModal();
+      alert('✅ Pickup scheduled! Collector notified. Route updated automatically.');
+    }
+    function simulateBinUpdate() {
+      const rows = document.querySelectorAll('.bin-row');
+      rows.forEach((row) => {
+        const newPct = Math.floor(Math.random() * 88) + 8;
+        const bar = row.querySelector('.bin-pct');
+        const label = row.querySelector('.bin-pct-label');
+        const dot = row.querySelector('.bin-status-dot');
+        bar.style.width = newPct + '%';
+        bar.className = 'bin-pct ' + (newPct > 80 ? 'pct-red' : newPct > 60 ? 'pct-orange' : 'pct-green');
+        label.textContent = newPct + '%';
+        label.style.color = newPct > 80 ? '#ef4444' : newPct > 60 ? '#f59e0b' : 'var(--green)';
+        dot.className = 'bin-status-dot ' + (newPct > 80 ? 'dot-crit' : newPct > 60 ? 'dot-warn' : 'dot-ok');
+        row.querySelector('.bin-progress').setAttribute('aria-valuenow', newPct);
+      });
+      document.getElementById('binUpdateTime').textContent = 'Updated just now';
+    }
+    // ═══ REAL MAP — LEAFLET + OPENSTREETMAP · 10 TRUCKS, 10 BINS ═══
+    // Bashundhara Residential Area, Dhaka — approximate real coordinates
+    const BASHUNDHARA_CENTER = [23.8213, 90.4327];
+
+    const BIN_POSITIONS = {
+      'Zone A': { lat: 23.8258, lng: 90.4279, pct: 34,  status: 'ok'   },
+      'Zone B': { lat: 23.8244, lng: 90.4318, pct: 78,  status: 'warn' },
+      'Zone C': { lat: 23.8230, lng: 90.4356, pct: 95,  status: 'crit' },
+      'Zone D': { lat: 23.8216, lng: 90.4290, pct: 20,  status: 'ok'   },
+      'Zone E': { lat: 23.8202, lng: 90.4330, pct: 61,  status: 'warn' },
+      'Zone F': { lat: 23.8190, lng: 90.4368, pct: 45,  status: 'ok'   },
+      'Zone G': { lat: 23.8176, lng: 90.4300, pct: 88,  status: 'crit' },
+      'Zone H': { lat: 23.8162, lng: 90.4340, pct: 52,  status: 'warn' },
+      'Zone I': { lat: 23.8236, lng: 90.4400, pct: 15,  status: 'ok'   },
+      'Zone J': { lat: 23.8150, lng: 90.4378, pct: 70,  status: 'warn' },
+    };
+
+    const TRUCK_POSITIONS = {
+      'T1':  { lat: 23.8250, lng: 90.4285, color: '#22c55e', zones: ['Zone A','Zone D'], next: 'Zone A — 34% full',        status: 'En Route',   road: 'Near Zone A' },
+      'T2':  { lat: 23.8238, lng: 90.4310, color: '#84cc16', zones: ['Zone A','Zone B'], next: 'Zone B — 78% ⚠ warning',   status: 'Collecting', road: 'Near Zone B' },
+      'T3':  { lat: 23.8226, lng: 90.4348, color: '#ef4444', zones: ['Zone B','Zone C'], next: 'Zone C — 95% 🚨 CRITICAL', status: 'URGENT',     road: 'Near Zone C' },
+      'T4':  { lat: 23.8210, lng: 90.4296, color: '#4ade80', zones: ['Zone D','Zone E'], next: 'Zone D — 20% full',        status: 'Patrolling', road: 'Near Zone D' },
+      'T5':  { lat: 23.8198, lng: 90.4324, color: '#86efac', zones: ['Zone E','Zone H'], next: 'Zone E — 61% ⚠ warning',   status: 'Collecting', road: 'Near Zone E' },
+      'T6':  { lat: 23.8184, lng: 90.4362, color: '#22c55e', zones: ['Zone F','Zone I'], next: 'Zone F — 45% full',        status: 'En Route',   road: 'Near Zone F' },
+      'T7':  { lat: 23.8170, lng: 90.4306, color: '#ef4444', zones: ['Zone G','Zone C'], next: 'Zone G — 88% 🚨 CRITICAL', status: 'URGENT',     road: 'Near Zone G' },
+      'T8':  { lat: 23.8156, lng: 90.4334, color: '#84cc16', zones: ['Zone H','Zone J'], next: 'Zone H — 52% ⚠ warning',   status: 'Collecting', road: 'Near Zone H' },
+      'T9':  { lat: 23.8232, lng: 90.4392, color: '#a3e635', zones: ['Zone I','Zone F'], next: 'Zone I — 15% full',        status: 'En Route',   road: 'Near Zone I' },
+      'T10': { lat: 23.8144, lng: 90.4372, color: '#ef4444', zones: ['Zone J','Zone G'], next: 'Zone J — 70% ⚠ warning',   status: 'Collecting', road: 'Near Zone J' },
+    };
+
+    // Reverse-lookup: which trucks cover a given zone (built from TRUCK_POSITIONS.zones)
+    const ZONE_TRUCKS = {};
+    Object.keys(BIN_POSITIONS).forEach(zone => { ZONE_TRUCKS[zone] = []; });
+    Object.entries(TRUCK_POSITIONS).forEach(([tid, tp]) => {
+      tp.zones.forEach(zone => { if (ZONE_TRUCKS[zone]) ZONE_TRUCKS[zone].push(tid); });
+    });
+
+    const BIN_COLOR = { ok: '#16a34a', warn: '#f59e0b', crit: '#ef4444' };
+
+    let realMap, truckMarkers = {}, binMarkers = {}, activeMarkerRef = null, activeRouteLine = null, activeRouteDots = [], routeRequestToken = 0;
+
+    function truckIcon(color) {
+      return L.divIcon({
+        className: '',
+        html: `<div style="background:${color};width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(255,255,255,0.15),0 2px 8px rgba(0,0,0,0.4);font-size:14px;">🚛</div>`,
+        iconSize: [26, 26],
+        iconAnchor: [13, 13]
+      });
+    }
+    function binIcon(color) {
+      return L.divIcon({
+        className: '',
+        html: `<div style="background:${color};width:18px;height:18px;border-radius:50%;box-shadow:0 0 0 4px ${color}33,0 2px 6px rgba(0,0,0,0.4);"></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+      });
+    }
+
+    function initRealMap() {
+      realMap = L.map('realMap', { zoomControl: true, attributionControl: true }).setView(BASHUNDHARA_CENTER, 15);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(realMap);
+
+      // Bin markers
+      Object.entries(BIN_POSITIONS).forEach(([zone, b]) => {
+        const color = BIN_COLOR[b.status];
+        const m = L.marker([b.lat, b.lng], { icon: binIcon(color) }).addTo(realMap);
+        const truckLinks = (ZONE_TRUCKS[zone] || []).map(tid => `<span class="popup-zone-link" onclick="selectTruck('${tid}')">${tid}</span>`).join(', ') || 'None assigned';
+        m.bindPopup(`<b>🗑️ ${zone}</b><br>Fill level: <b style="color:${color}">${b.pct}%</b><br>Status: ${b.status === 'crit' ? 'Critical — needs pickup' : b.status === 'warn' ? 'Warning — filling up' : 'OK'}<br>Collected by: ${truckLinks}`);
+        binMarkers[zone] = m;
+      });
+
+      // Truck markers
+      Object.entries(TRUCK_POSITIONS).forEach(([tid, tp]) => {
+        const m = L.marker([tp.lat, tp.lng], { icon: truckIcon(tp.color) }).addTo(realMap);
+        const zoneLinks = tp.zones.map(z => `<span class="popup-zone-link" onclick="selectZone('${z}')">${z}</span>`).join(', ');
+        m.bindPopup(`<b>🚛 ${tid} — ${tp.status}</b><br>Collects from: ${zoneLinks}<br>Next: ${tp.next}`);
+        truckMarkers[tid] = m;
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initRealMap);
+
+    // ═══ SEARCH LOGIC — flies the real Leaflet map to the truck / zone found ═══
+    function searchRoad(query) {
+      const q = query.trim().toLowerCase();
+      const sugg = document.getElementById('searchSuggestions');
+      const clearBtn = document.getElementById('searchClearBtn');
+      clearBtn.style.display = q ? 'flex' : 'none';
+      if (!q) { sugg.style.display = 'none'; clearHighlight(); return; }
+
+      // Truck match (exact or prefix, e.g. "t1" matches T1 and T10)
+      const truckMatches = Object.entries(TRUCK_POSITIONS).filter(([tid]) =>
+        tid.toLowerCase() === q || tid.toLowerCase().startsWith(q)
+      );
+      if (truckMatches.length > 0) {
+        sugg.innerHTML = truckMatches.map(([tid, tp]) =>
+          `<div class="rss-item" onclick="selectTruck('${tid}')">
+            <span class="rss-name">🚛 ${tid} — ${tp.road}</span>
+            <span class="rss-truck rss-truck-active">${tp.status}</span>
+          </div>`
+        ).join('');
+        sugg.style.display = 'block';
+        return;
+      }
+
+      // Zone / bin match
+      const zoneMatches = Object.entries(BIN_POSITIONS).filter(([zone]) =>
+        zone.toLowerCase().includes(q)
+      );
+      if (zoneMatches.length === 0) {
+        sugg.innerHTML = '<div class="rss-none">No zone or truck found for "' + query + '"</div>';
+        sugg.style.display = 'block';
+        return;
+      }
+      sugg.innerHTML = zoneMatches.map(([zone, b]) => {
+        const tCount = (ZONE_TRUCKS[zone] || []).length;
+        return `<div class="rss-item" onclick="selectZone('${zone}')">
+          <span class="rss-name">🗑️ ${zone}</span>
+          <span class="rss-truck ${b.status === 'crit' ? 'rss-truck-active' : b.status === 'warn' ? 'rss-truck-active' : 'rss-truck-none'}">${b.pct}% full · ${tCount} truck${tCount === 1 ? '' : 's'}</span>
+        </div>`;
+      }).join('');
+      sugg.style.display = 'block';
+    }
+
+    // Select truck directly by truck ID (T1–T10) — flies real map to it
+    // Draws a green route line from the truck's current spot through every zone
+    // it collects from (in order) — start point to end point of its run.
+    // Draws the dots immediately, then fetches a real road-following path
+    // from OSRM (free routing engine) and swaps in the road-accurate line
+    // once it arrives — falls back to a straight line if offline/unreachable.
+    async function drawTruckRoute(tid) {
+      clearRoute();
+      const tp = TRUCK_POSITIONS[tid];
+      if (!tp) return;
+      const routeToken = ++routeRequestToken; // guards against out-of-order responses
+
+      const stops = [{ lat: tp.lat, lng: tp.lng, label: 'Start — current location' }];
+      tp.zones.forEach((z, i) => {
+        const b = BIN_POSITIONS[z];
+        if (b) stops.push({ lat: b.lat, lng: b.lng, label: (i === tp.zones.length - 1 ? 'End — ' : '') + z });
+      });
+      const straightLatLngs = stops.map(s => [s.lat, s.lng]);
+
+      // Stop markers (start/via/end) — shown right away
+      stops.forEach((s, i) => {
+        const isStart = i === 0;
+        const isEnd = i === stops.length - 1;
+        const dot = L.circleMarker([s.lat, s.lng], {
+          radius: isStart || isEnd ? 7 : 5,
+          color: '#ffffff', weight: 2,
+          fillColor: isStart ? '#3b82f6' : isEnd ? '#ef4444' : '#22c55e',
+          fillOpacity: 1
+        }).addTo(realMap);
+        dot.bindTooltip(s.label, { permanent: false, direction: 'top' });
+        activeRouteDots.push(dot);
+      });
+
+      realMap.fitBounds(L.latLngBounds(straightLatLngs), { padding: [70, 70], maxZoom: 16 });
+
+      // Draw a temporary straight line immediately so something is visible while we fetch the real road path
+      activeRouteLine = L.polyline(straightLatLngs, {
+        color: '#22c55e', weight: 4, opacity: 0.55, dashArray: '10,8', lineCap: 'round'
+      }).addTo(realMap);
+
+      // Ask OSRM (free, no key) for the actual road-following path through every stop
+      try {
+        const coordsParam = stops.map(s => `${s.lng},${s.lat}`).join(';');
+        const url = `https://router.project-osrm.org/route/v1/driving/${coordsParam}?overview=full&geometries=geojson`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (routeToken !== routeRequestToken) return; // a newer truck was selected meanwhile — ignore this response
+
+        if (data.routes && data.routes[0]) {
+          const roadLatLngs = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+          if (activeRouteLine) realMap.removeLayer(activeRouteLine);
+          activeRouteLine = L.polyline(roadLatLngs, {
+            color: '#22c55e', weight: 4, opacity: 0.9, dashArray: '10,8', lineCap: 'round'
+          }).addTo(realMap);
+        }
+      } catch (e) {
+        // Offline or routing service unreachable — the straight-line fallback above stays visible
+        console.warn('Road routing unavailable, showing straight-line path instead:', e);
+      }
+    }
+
+    function clearRoute() {
+      routeRequestToken++; // invalidate any in-flight OSRM fetch
+      if (activeRouteLine) { realMap.removeLayer(activeRouteLine); activeRouteLine = null; }
+      activeRouteDots.forEach(d => realMap.removeLayer(d));
+      activeRouteDots = [];
+    }
+
+    function selectTruck(tid) {
+      document.getElementById('searchSuggestions').style.display = 'none';
+      const tp = TRUCK_POSITIONS[tid];
+      if (!tp) return;
+
+      document.getElementById('roadSearchInput').value = tid;
+      document.getElementById('searchClearBtn').style.display = 'flex';
+
+      drawTruckRoute(tid);
+      const marker = truckMarkers[tid];
+      if (marker) {
+        if (activeMarkerRef) activeMarkerRef.closePopup();
+        marker.openPopup();
+        activeMarkerRef = marker;
+      }
+
+      const panel = document.getElementById('roadResultPanel');
+      const content = document.getElementById('roadResultContent');
+      const urgentBg = tp.status === 'URGENT' ? 'rgba(239,68,68,0.08)' : `${tp.color}10`;
+      const zonesHTML = tp.zones.map(z => {
+        const b = BIN_POSITIONS[z];
+        const c = b ? BIN_COLOR[b.status] : '#8fa88a';
+        return `<span class="rrp-truck-badge" style="background:${c}18;color:${c};border:1px solid ${c}40;margin-right:6px;margin-bottom:6px;display:inline-block;cursor:pointer" onclick="selectZone('${z}')">🗑️ ${z}${b ? ' — ' + b.pct + '%' : ''}</span>`;
+      }).join('');
+
+      // Zones this truck does NOT cover — what's left for other trucks
+      const remainingZones = Object.keys(BIN_POSITIONS).filter(z => !tp.zones.includes(z));
+      const remainingHTML = remainingZones.length
+        ? remainingZones.map(z => {
+            const b = BIN_POSITIONS[z];
+            const c = BIN_COLOR[b.status];
+            const coveredBy = (ZONE_TRUCKS[z] || []).filter(t => t !== tid);
+            const coveredLabel = coveredBy.length ? `covered by ${coveredBy.join(', ')}` : 'no truck assigned';
+            return `<span class="rrp-truck-badge" style="background:rgba(255,255,255,0.05);color:#8fa88a;border:1px solid rgba(255,255,255,0.12);margin-right:6px;margin-bottom:6px;display:inline-block;cursor:pointer" onclick="selectZone('${z}')" title="${coveredLabel}">🗑️ ${z} — <span style="color:${c}">${b.pct}%</span></span>`;
+          }).join('')
+        : `<span style="font-size:0.78rem;color:#8fa88a;">This truck already covers every zone.</span>`;
+
+      content.innerHTML = `
+        <div class="rrp-road-name">🚛 ${tid} — ${tp.status}</div>
+        <div class="rrp-road-desc">📍 Currently near: <strong style="color:#e5f5e0">${tp.road}</strong></div>
+        <div class="rrp-truck" style="margin-top:6px; flex-direction:column; align-items:flex-start;">
+          <span style="font-size:0.78rem;color:#8fa88a;margin-bottom:6px;">Collects waste from these areas:</span>
+          <div>${zonesHTML}</div>
+          <div class="rrp-truck-detail" style="margin-top:8px;">
+            <span>Next pickup: ${tp.next}</span>
+            <span>Status: <strong style="color:${tp.color}">${tp.status}</strong></span>
+          </div>
+          <span style="font-size:0.78rem;color:#8fa88a;margin-top:12px;margin-bottom:6px;">Zones ${tid} does <u>not</u> cover (remaining):</span>
+          <div>${remainingHTML}</div>
+        </div>
+        </div>`;
+      panel.style.display = 'flex';
+    }
+
+    // Select a zone/bin directly — flies real map to it
+    function selectZone(zone) {
+      document.getElementById('searchSuggestions').style.display = 'none';
+      const b = BIN_POSITIONS[zone];
+      if (!b) return;
+
+      document.getElementById('roadSearchInput').value = zone;
+      document.getElementById('searchClearBtn').style.display = 'flex';
+
+      clearRoute();
+      realMap.flyTo([b.lat, b.lng], 17, { duration: 1.2 });
+      const marker = binMarkers[zone];
+      if (marker) {
+        if (activeMarkerRef) activeMarkerRef.closePopup();
+        marker.openPopup();
+        activeMarkerRef = marker;
+      }
+
+      const color = BIN_COLOR[b.status];
+      const truckIds = ZONE_TRUCKS[zone] || [];
+      const truckHTML = truckIds.length
+        ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">` +
+          truckIds.map(tid => {
+            const tp = TRUCK_POSITIONS[tid];
+            return `<span class="rrp-truck-badge" style="background:${tp.color}20;color:${tp.color};border:1px solid ${tp.color}40;cursor:pointer" onclick="selectTruck('${tid}')">🚛 ${tid} — ${tp.status}</span>`;
+          }).join('') +
+          `</div>`
+        : `<div class="rrp-no-truck">No truck currently assigned to this zone</div>`;
+
+      const panel = document.getElementById('roadResultPanel');
+      const content = document.getElementById('roadResultContent');
+      content.innerHTML = `
+        <div class="rrp-road-name">🗑️ ${zone}</div>
+        <div class="rrp-road-desc">Fill level: <strong style="color:${color}">${b.pct}%</strong> — ${b.status === 'crit' ? 'Critical, needs pickup' : b.status === 'warn' ? 'Filling up' : 'OK'}</div>
+        <span style="font-size:0.78rem;color:#8fa88a;display:block;margin-top:8px;">Trucks that collect waste from this area:</span>
+        ${truckHTML}`;
+      panel.style.display = 'flex';
+    }
+
+    function clearHighlight() {
+      if (activeMarkerRef) { activeMarkerRef.closePopup(); activeMarkerRef = null; }
+      clearRoute();
+      document.getElementById('roadResultPanel').style.display = 'none';
+      document.getElementById('searchSuggestions').style.display = 'none';
+    }
+
+    function clearSearch() {
+      document.getElementById('roadSearchInput').value = '';
+      document.getElementById('searchClearBtn').style.display = 'none';
+      clearHighlight();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.road-search-bar')) {
+          document.getElementById('searchSuggestions').style.display = 'none';
+        }
+      });
+    });
+
+    function refreshData() {
+      const vals = [
+        Math.floor(Math.random()*20)+40,
+        Math.floor(Math.random()*5)+30,
+        Math.floor(Math.random()*15)+55,
+        Math.floor(Math.random()*10)+80
+      ];
+      document.getElementById('kpi1').textContent = vals[0];
+      document.getElementById('kpi2').textContent = vals[1];
+      document.getElementById('kpi3').textContent = vals[2]+'%';
+      document.getElementById('kpi4').textContent = vals[3]+'%';
+      document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+    }
+  </script>
+  <script>
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        sessionStorage.removeItem('ecotrack_session');
+        window.location.href = 'login.html';
+      }
+    }
+  </script>
+
+</body>
+</html>

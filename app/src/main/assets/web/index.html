@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EcoTrack — Smart Waste Management Platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">♻</span>
+        <span>EcoTrack</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="recycle.html">Recycle</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <a href="login.html" class="btn btn-primary nav-cta" id="navLoginBtn">Login</a>
+      <button class="hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+    <ul class="mobile-menu" id="mobileMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="features.html">Features</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="recycle.html">Recycle</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="orb orb3"></div>
+      <div class="grid-lines"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">🌿 Smart City Solution · Bangladesh</div>
+      <h1 class="hero-title">
+        Smarter Waste.<br/>
+        <span class="gradient-text">Greener Cities.</span>
+      </h1>
+      <p class="hero-sub">
+        GPS-enabled real-time waste tracking, intelligent route optimization, and citizen-driven recycling — all in one unified platform designed for Dhaka and beyond.
+      </p>
+      <div class="hero-actions">
+        <a href="dashboard.html" class="btn-primary">View Dashboard</a>
+        <a href="features.html" class="btn-ghost">Explore Features</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">100+</span>
+          <span class="stat-label">Households Piloted</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">30%</span>
+          <span class="stat-label">Route Efficiency Gain</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">60%</span>
+          <span class="stat-label">Literature Support</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="phone-mockup">
+        <div class="phone-screen">
+          <div class="app-header">
+            <span>EcoTrack App</span>
+            <span class="dot-green">●</span>
+          </div>
+          <div class="app-map">
+            <div class="map-pin pin1">📍</div>
+            <div class="map-pin pin2">📍</div>
+            <div class="map-pin pin3">🚛</div>
+            <div class="route-line"></div>
+          </div>
+          <div class="app-cards">
+            <div class="app-card green">
+              <span>Bin A — 34%</span>
+              <div class="fill-bar"><div class="fill" style="width:34%"></div></div>
+            </div>
+            <div class="app-card orange">
+              <span>Bin B — 78%</span>
+              <div class="fill-bar"><div class="fill" style="width:78%; background:#f59e0b"></div></div>
+            </div>
+            <div class="app-card red">
+              <span>Bin C — 95% ⚠</span>
+              <div class="fill-bar"><div class="fill" style="width:95%; background:#ef4444"></div></div>
+            </div>
+          </div>
+          <div class="app-btn">Request Pickup →</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="container">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">From Bin to Clean — in 3 Steps</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-icon">📡</div>
+          <h3>Real-Time Monitoring</h3>
+          <p>Smart bins send GPS-tagged fill-level updates. Citizens and admins see live status on dashboard instantly.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-icon">🗺️</div>
+          <h3>Route Optimization</h3>
+          <p>AI-driven routing ensures collectors take the most efficient path, cutting fuel costs and collection time.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-icon">🏆</div>
+          <h3>Rewards & Recycling</h3>
+          <p>Users earn eco-points for responsible disposal and recycling. Gamified system drives long-term engagement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES PREVIEW -->
+  <section class="features-preview">
+    <div class="container">
+      <div class="section-label">Key Features</div>
+      <h2 class="section-title">Everything You Need, Nothing You Don't</h2>
+      <div class="features-grid">
+        <div class="feature-card fc-large">
+          <div class="fc-icon">🗑️</div>
+          <h3>Smart Bin Monitoring</h3>
+          <p>Real-time fill level tracking with overflow alerts. Prevent unsanitary overflow before it happens.</p>
+          <a href="features.html" class="fc-link">Learn more →</a>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">📅</div>
+          <h3>Pickup Scheduling</h3>
+          <p>Citizens request pickups on their schedule. Automated confirmations sent instantly.</p>
+          <a href="features.html" class="fc-link">Learn more →</a>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">📊</div>
+          <h3>Admin Dashboard</h3>
+          <p>Centralized analytics and logistics management for municipal authorities.</p>
+          <a href="dashboard.html" class="fc-link">View demo →</a>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">♻️</div>
+          <h3>Recycling Education</h3>
+          <p>Interactive modules, quizzes, and sorting guides to build recycling habits at scale.</p>
+          <a href="recycle.html" class="fc-link">Explore →</a>
+        </div>
+        <div class="feature-card fc-large dark">
+          <div class="fc-icon">🤖</div>
+          <h3>AI-Powered Waste Sorting</h3>
+          <p>Machine learning classifies waste types automatically, improving sorting accuracy and reducing contamination in recycling streams.</p>
+          <a href="features.html" class="fc-link light-link">Learn more →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PILOT RESULTS -->
+  <section class="pilot-section">
+    <div class="container">
+      <div class="pilot-inner">
+        <div class="pilot-text">
+          <div class="section-label">Pilot Study</div>
+          <h2>Tested in Bashundhara, Dhaka</h2>
+          <p>Our 30-day pilot with 100 households and 15 municipal workers in Dhaka's Bashundhara Residential Area demonstrated measurable improvements in collection efficiency and citizen engagement.</p>
+          <ul class="pilot-list">
+            <li>✅ Reduced collection time through GPS route optimization</li>
+            <li>✅ Increased recycling participation via reward system</li>
+            <li>✅ Real-time bin alerts reduced overflow incidents</li>
+            <li>✅ Municipal staff reported improved coordination</li>
+          </ul>
+          <a href="features.html" class="btn-primary">Read Full Report</a>
+        </div>
+        <div class="pilot-stats">
+          <div class="pstat-card">
+            <span class="pstat-n">100</span>
+            <span class="pstat-l">Households</span>
+          </div>
+          <div class="pstat-card">
+            <span class="pstat-n">15</span>
+            <span class="pstat-l">Municipal Workers</span>
+          </div>
+          <div class="pstat-card">
+            <span class="pstat-n">30</span>
+            <span class="pstat-l">Days Trial</span>
+          </div>
+          <div class="pstat-card">
+            <span class="pstat-n">30+</span>
+            <span class="pstat-l">Papers Reviewed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Ready to Transform Waste Management?</h2>
+        <p>Join the movement toward smarter, greener, citizen-centered cities.</p>
+        <div class="cta-actions">
+          <a href="dashboard.html" class="btn-primary">Launch Dashboard</a>
+          <a href="contact.html" class="btn-ghost-white">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="14" fill="#84cc16" opacity="0.3"/>
+              <path d="M16 8 L16 24 M10 14 L16 8 L22 14" stroke="#84cc16" stroke-width="2.5"/>
+            </svg>
+            <span>EcoTrack</span>
+          </div>
+          <p>Smart waste management for sustainable cities.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Platform</h5>
+          <ul>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="recycle.html">Education</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Connect</h5>
+          <ul>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 EcoTrack | Developed by MD READ HOSSAIN - IUB CSE</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

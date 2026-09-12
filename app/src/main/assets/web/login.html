@@ -1,0 +1,310 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — EcoTrack</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      padding: 2rem;
+    }
+
+    /* ── Role Selection ── */
+    .role-wrapper {
+      width: 100%;
+      max-width: 700px;
+    }
+    .role-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .role-logo {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      margin-bottom: 0.75rem;
+    }
+    .role-logo span {
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: #16a34a;
+    }
+    .role-tagline { color: #6b7280; font-size: 14px; }
+    .role-cards {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;
+    }
+    .role-card {
+      background: white; border-radius: 20px; padding: 2rem 1.5rem;
+      border: 2px solid #e5e7eb; cursor: pointer;
+      transition: all 0.25s; text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .role-card:hover {
+      border-color: #16a34a; transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(22,163,74,0.12);
+    }
+    .role-card .r-icon { font-size: 2.5rem; display: block; margin-bottom: 0.75rem; }
+    .role-card .r-title {
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+      color: #1f2937; margin-bottom: 0.3rem;
+    }
+    .role-card .r-desc { font-size: 13px; color: #6b7280; line-height: 1.5; }
+    .role-card .r-badge {
+      display: inline-block; margin-top: 0.75rem;
+      padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    }
+    .badge-user  { background: #dbeafe; color: #1d4ed8; }
+    .badge-admin { background: #fef3c7; color: #92400e; }
+    .role-back { text-align: center; }
+    .role-back a { color: #6b7280; font-size: 13px; text-decoration: none; }
+    .role-back a:hover { color: #16a34a; }
+
+    /* ── Login Form ── */
+    .login-box {
+      background: white;
+      padding: 3rem;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      max-width: 440px;
+      width: 100%;
+      display: none;
+      animation: fadeUp 0.3s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .login-box.visible { display: block; }
+
+    .login-header { text-align: center; margin-bottom: 2.5rem; }
+    .login-logo {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; margin-bottom: 1rem;
+    }
+    .login-logo svg { width: 40px; height: 40px; }
+    .login-logo span {
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: #16a34a;
+    }
+    .login-title   { font-size: 24px; font-weight: 600; color: #1f2937; margin-bottom: 0.5rem; }
+    .login-subtitle { color: #6b7280; font-size: 15px; }
+
+    .form-hint {
+      background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;
+      padding: 10px 14px; font-size: 12px; color: #15803d;
+      margin-bottom: 1.5rem; line-height: 1.5;
+    }
+
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label {
+      display: block; font-weight: 500; color: #374151;
+      margin-bottom: 0.5rem; font-size: 14px;
+    }
+    .form-group input {
+      width: 100%; padding: 12px 16px;
+      border: 2px solid #e5e7eb; border-radius: 12px;
+      font-size: 15px; transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .form-group input:focus {
+      outline: none; border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.1);
+    }
+
+    .btn-login {
+      width: 100%; padding: 14px; background: #16a34a; color: white;
+      border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-login:hover {
+      background: #15803d; transform: translateY(-1px);
+      box-shadow: 0 8px 16px rgba(22,163,74,0.2);
+    }
+
+    .error-msg {
+      background: #fee; color: #c00; padding: 12px 16px; border-radius: 10px;
+      margin-bottom: 1.5rem; font-size: 14px; display: none;
+      border-left: 4px solid #c00;
+    }
+    .error-msg.show { display: block; }
+
+    .back-role { text-align: center; margin-top: 1.25rem; }
+    .back-role button {
+      background: none; border: none; color: #16a34a; font-size: 13px;
+      font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    }
+    .back-role button:hover { text-decoration: underline; }
+
+    .password-toggle { position: relative; }
+    .password-toggle button {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: #6b7280; font-size: 14px; padding: 4px 8px;
+    }
+
+    @media (max-width: 540px) { .role-cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="login-container">
+
+  <!-- Step 1: Role Selection -->
+  <div class="role-wrapper" id="roleSelect">
+    <div class="role-header">
+      <div class="role-logo">
+        <svg width="38" height="38" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="14" fill="#16a34a" opacity="0.2"/>
+          <path d="M16 8 L16 24 M10 14 L16 8 L22 14" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>EcoTrack</span>
+      </div>
+      <p class="role-tagline">Smart Waste Management Platform · Bangladesh</p>
+    </div>
+
+    <div class="role-cards">
+      <div class="role-card" onclick="selectRole('user')">
+        <span class="r-icon">🌿</span>
+        <div class="r-title">Citizen / User</div>
+        <div class="r-desc">Send messages, make pickup requests, and receive replies from the admin team.</div>
+        <span class="r-badge badge-user">User Portal</span>
+      </div>
+      <div class="role-card" onclick="selectRole('admin')">
+        <span class="r-icon">🛡️</span>
+        <div class="r-title">Administrator</div>
+        <div class="r-desc">Manage citizen messages, send replies, and oversee platform operations.</div>
+        <span class="r-badge badge-admin">Admin Panel</span>
+      </div>
+    </div>
+    <div class="role-back"><a href="index.html">← Back to Home</a></div>
+  </div>
+
+  <!-- Step 2: Login Form -->
+  <div class="login-box" id="loginBox">
+    <div class="login-header">
+      <div class="login-logo">
+        <svg viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="14" fill="#16a34a" opacity="0.2"/>
+          <path d="M16 8 L16 24 M10 14 L16 8 L22 14" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>EcoTrack</span>
+      </div>
+      <h1 class="login-title" id="loginTitle">Welcome Back</h1>
+      <p class="login-subtitle" id="loginSubtitle">Sign in to access the dashboard</p>
+    </div>
+
+    <div class="form-hint" id="formHint" style="display:none"></div>
+    <div id="errorMsg" class="error-msg"></div>
+
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="Enter your email" autocomplete="email">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <div class="password-toggle">
+        <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+        <button type="button" id="togglePassword">Show</button>
+      </div>
+    </div>
+
+    <button class="btn-login" onclick="doLogin()">Sign In →</button>
+
+    <div class="back-role">
+      <button onclick="goBack()">← Choose a different role</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const USERS = [
+    { email: 'user1@ecotrack.com',  password: '123456', role: 'user', name: 'User 1'  },
+    { email: 'user2@ecotrack.com',  password: '123456', role: 'user', name: 'User 2'  },
+    { email: 'user3@ecotrack.com',  password: '123456', role: 'user', name: 'User 3'  },
+    { email: 'user4@ecotrack.com',  password: '123456', role: 'user', name: 'User 4'  },
+    { email: 'user5@ecotrack.com',  password: '123456', role: 'user', name: 'User 5'  },
+    { email: 'user6@ecotrack.com',  password: '123456', role: 'user', name: 'User 6'  },
+    { email: 'user7@ecotrack.com',  password: '123456', role: 'user', name: 'User 7'  },
+    { email: 'user8@ecotrack.com',  password: '123456', role: 'user', name: 'User 8'  },
+    { email: 'user9@ecotrack.com',  password: '123456', role: 'user', name: 'User 9'  },
+    { email: 'user10@ecotrack.com', password: '123456', role: 'user', name: 'User 10' },
+    { email: '2021741@iub.edu.bd', password: '1122@3344', role: 'admin', name: 'MD Read Hossain' }
+  ];
+
+  let currentRole = null;
+
+  // Auto-redirect if already logged in
+  const sess = JSON.parse(sessionStorage.getItem('ecotrack_session') || 'null');
+  if (sess) {
+    window.location.href = sess.role === 'admin' ? 'dashboard.html' : 'user-dashboard.html';
+  }
+
+  function selectRole(role) {
+    currentRole = role;
+    document.getElementById('roleSelect').style.display = 'none';
+    const box = document.getElementById('loginBox');
+    box.classList.add('visible');
+
+    if (role === 'admin') {
+      document.getElementById('loginTitle').textContent = 'Admin Login';
+      document.getElementById('loginSubtitle').textContent = 'Restricted — authorized personnel only';
+      const hint = document.getElementById('formHint');
+      hint.textContent = '🔒 Enter your admin credentials to continue.';
+      hint.style.display = 'block';
+    } else {
+      document.getElementById('loginTitle').textContent = 'Citizen Login';
+      document.getElementById('loginSubtitle').textContent = 'Sign in to send messages and track your requests';
+      const hint = document.getElementById('formHint');
+      hint.innerHTML = '💡 Demo — 10 accounts available: <b>user1@ecotrack.com</b> to <b>user10@ecotrack.com</b> · Password: <b>123456</b>';
+      hint.style.display = 'block';
+    }
+  }
+
+  function goBack() {
+    currentRole = null;
+    document.getElementById('loginBox').classList.remove('visible');
+    document.getElementById('roleSelect').style.display = 'block';
+    document.getElementById('email').value    = '';
+    document.getElementById('password').value = '';
+    document.getElementById('errorMsg').classList.remove('show');
+  }
+
+  function doLogin() {
+    const email = document.getElementById('email').value.trim();
+    const pass  = document.getElementById('password').value;
+    const err   = document.getElementById('errorMsg');
+
+    const match = USERS.find(u => u.email === email && u.password === pass && u.role === currentRole);
+    if (match) {
+      sessionStorage.setItem('ecotrack_session', JSON.stringify({
+        email: match.email, role: match.role, name: match.name
+      }));
+      window.location.href = match.role === 'admin' ? 'dashboard.html' : 'user-dashboard.html';
+    } else {
+      err.textContent = '❌ Invalid ' + (currentRole === 'admin' ? 'admin' : 'user') + ' credentials. Please try again.';
+      err.classList.add('show');
+      setTimeout(() => err.classList.remove('show'), 3500);
+    }
+  }
+
+  // Password show/hide
+  document.getElementById('togglePassword').addEventListener('click', function() {
+    const inp  = document.getElementById('password');
+    const type = inp.type === 'password' ? 'text' : 'password';
+    inp.type = type;
+    this.textContent = type === 'password' ? 'Show' : 'Hide';
+  });
+
+  // Enter key support
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && currentRole) doLogin();
+  });
+</script>
+</body>
+</html>

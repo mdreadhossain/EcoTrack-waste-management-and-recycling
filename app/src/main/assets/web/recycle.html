@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recycle & Learn — EcoTrack</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">♻</span><span>EcoTrack</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="recycle.html" class="active">Recycle</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <a href="login.html" class="btn btn-primary nav-cta" id="navLoginBtn">Login</a>
+      <button class="hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+    <ul class="mobile-menu" id="mobileMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="features.html">Features</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="recycle.html">Recycle</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-badge">Recycling Education</div>
+      <h1>Learn. Sort. Earn.</h1>
+      <p>Interactive guides, quizzes, and an incentive system designed to build lasting recycling habits in your community.</p>
+    </div>
+  </section>
+
+  <section class="recycle-main">
+    <div class="container">
+
+      <!-- Points tracker -->
+      <div style="background:linear-gradient(135deg,var(--dark),var(--dark2));border-radius:20px;padding:28px 36px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:48px">
+        <div>
+          <div style="font-size:0.8rem;color:#8fa88a;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">Your Eco-Points</div>
+          <div style="font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;color:#84cc16" id="totalPoints">250</div>
+          <div style="font-size:0.82rem;color:#8fa88a;margin-top:4px">🏆 Level 3 — Eco Warrior</div>
+        </div>
+        <div style="display:flex;gap:20px;flex-wrap:wrap">
+          <div style="text-align:center">
+            <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#4ade80" id="quizScore">2</div>
+            <div style="font-size:0.75rem;color:#8fa88a">Quizzes Done</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#4ade80">8</div>
+            <div style="font-size:0.75rem;color:#8fa88a">Items Sorted</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#fbbf24">3</div>
+            <div style="font-size:0.75rem;color:#8fa88a">Rewards Available</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Waste Categories -->
+      <div class="section-label" style="margin-bottom:14px">Waste Categories</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--dark);margin-bottom:28px">Know Your Waste</h2>
+      <div class="waste-categories">
+        <div class="waste-cat" onclick="showCatInfo('organic')">
+          <div class="waste-icon">🌿</div>
+          <h4>Organic</h4>
+          <p>Food scraps, garden waste, biodegradable materials</p>
+          <div class="wcat-examples">
+            <span class="wex">Vegetables</span>
+            <span class="wex">Fruit peels</span>
+            <span class="wex">Leaves</span>
+            <span class="wex">Coffee grounds</span>
+          </div>
+        </div>
+        <div class="waste-cat" onclick="showCatInfo('recyclable')">
+          <div class="waste-icon">♻️</div>
+          <h4>Recyclable</h4>
+          <p>Paper, plastic, glass, metal — clean and dry</p>
+          <div class="wcat-examples">
+            <span class="wex">Bottles</span>
+            <span class="wex">Cardboard</span>
+            <span class="wex">Cans</span>
+            <span class="wex">Newspapers</span>
+          </div>
+        </div>
+        <div class="waste-cat" onclick="showCatInfo('hazardous')">
+          <div class="waste-icon">☢️</div>
+          <h4>Hazardous</h4>
+          <p>Batteries, chemicals, medicines, electronics</p>
+          <div class="wcat-examples">
+            <span class="wex">Batteries</span>
+            <span class="wex">Paint</span>
+            <span class="wex">Medicines</span>
+            <span class="wex">E-waste</span>
+          </div>
+        </div>
+        <div class="waste-cat" onclick="showCatInfo('general')">
+          <div class="waste-icon">🗑️</div>
+          <h4>General Waste</h4>
+          <p>Non-recyclable, non-hazardous everyday waste</p>
+          <div class="wcat-examples">
+            <span class="wex">Styrofoam</span>
+            <span class="wex">Dirty plastic</span>
+            <span class="wex">Diapers</span>
+            <span class="wex">Ceramics</span>
+          </div>
+        </div>
+      </div>
+      <div id="catInfoBox" style="display:none;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px"></div>
+
+      <!-- Sorting Guide Table -->
+      <div class="sort-guide">
+        <h2>Sorting Quick Guide</h2>
+        <div class="sort-table">
+          <div class="sort-row sort-header">
+            <div class="sort-cell">Item</div>
+            <div class="sort-cell">✅ Goes In</div>
+            <div class="sort-cell">❌ Not In</div>
+          </div>
+          <div class="sort-row">
+            <div class="sort-cell" style="font-weight:600">Plastic bottles</div>
+            <div class="sort-cell green-cell">♻️ Recyclable bin — rinse first</div>
+            <div class="sort-cell red-cell">Not organic or general bin</div>
+          </div>
+          <div class="sort-row">
+            <div class="sort-cell" style="font-weight:600">Food scraps</div>
+            <div class="sort-cell green-cell">🌿 Organic bin</div>
+            <div class="sort-cell red-cell">Not recyclable — contaminates</div>
+          </div>
+          <div class="sort-row">
+            <div class="sort-cell" style="font-weight:600">Old batteries</div>
+            <div class="sort-cell green-cell">☢️ Hazardous drop-off point</div>
+            <div class="sort-cell red-cell">Never in general bin — toxic!</div>
+          </div>
+          <div class="sort-row">
+            <div class="sort-cell" style="font-weight:600">Cardboard box</div>
+            <div class="sort-cell green-cell">♻️ Recyclable — flatten it first</div>
+            <div class="sort-cell red-cell">Not if it's greasy (pizza box)</div>
+          </div>
+          <div class="sort-row">
+            <div class="sort-cell" style="font-weight:600">Broken glass</div>
+            <div class="sort-cell green-cell">🗑️ General waste — wrapped safely</div>
+            <div class="sort-cell red-cell">Not loose in recyclable bin</div>
+          </div>
+          <div class="sort-row">
+            <div class="sort-cell" style="font-weight:600">Medicine bottles</div>
+            <div class="sort-cell green-cell">☢️ Hazardous collection</div>
+            <div class="sort-cell red-cell">Remove labels, don't recycle with drugs inside</div>
+          </div>
+          <div class="sort-row">
+            <div class="sort-cell" style="font-weight:600">Newspaper</div>
+            <div class="sort-cell green-cell">♻️ Recyclable — keep dry</div>
+            <div class="sort-cell red-cell">Not if wet or food-stained</div>
+          </div>
+          <div class="sort-row">
+            <div class="sort-cell" style="font-weight:600">Garden leaves</div>
+            <div class="sort-cell green-cell">🌿 Organic — great for composting</div>
+            <div class="sort-cell red-cell">Not if treated with pesticides</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Quiz -->
+      <div class="quiz-section">
+        <h2>Recycling Quiz 🎯</h2>
+        <p>Test your knowledge and earn eco-points for every correct answer!</p>
+
+        <div class="quiz-card" id="q1card">
+          <div class="quiz-q">1. Where should you put an empty plastic water bottle?</div>
+          <div class="quiz-options">
+            <button class="quiz-opt" onclick="answer(this,'wrong','q1card')">🌿 Organic bin</button>
+            <button class="quiz-opt" onclick="answer(this,'correct','q1card')">♻️ Recyclable bin (rinsed)</button>
+            <button class="quiz-opt" onclick="answer(this,'wrong','q1card')">☢️ Hazardous collection</button>
+            <button class="quiz-opt" onclick="answer(this,'wrong','q1card')">🗑️ General waste</button>
+          </div>
+          <div class="quiz-feedback qf-correct" id="q1-correct">✅ Correct! +50 eco-points! Plastic bottles go in the recyclable bin — just rinse them first!</div>
+          <div class="quiz-feedback qf-wrong" id="q1-wrong">❌ Incorrect. Plastic bottles should go in the ♻️ Recyclable bin after rinsing.</div>
+        </div>
+
+        <div class="quiz-card" id="q2card">
+          <div class="quiz-q">2. You have a pizza box with grease stains. What do you do?</div>
+          <div class="quiz-options">
+            <button class="quiz-opt" onclick="answer(this,'wrong','q2card')">♻️ Put it in recyclable bin</button>
+            <button class="quiz-opt" onclick="answer(this,'correct','q2card')">🗑️ General waste — grease contaminates recycling</button>
+            <button class="quiz-opt" onclick="answer(this,'wrong','q2card')">🌿 Compost the whole box</button>
+            <button class="quiz-opt" onclick="answer(this,'wrong','q2card')">☢️ Hazardous collection</button>
+          </div>
+          <div class="quiz-feedback qf-correct" id="q2-correct">✅ Correct! +50 points! Greasy cardboard cannot be recycled. Tear off and recycle the clean top, trash the greasy bottom.</div>
+          <div class="quiz-feedback qf-wrong" id="q2-wrong">❌ Greasy cardboard contaminates recycling batches. It goes in general waste.</div>
+        </div>
+
+        <div class="quiz-card" id="q3card">
+          <div class="quiz-q">3. Old phone batteries should go...</div>
+          <div class="quiz-options">
+            <button class="quiz-opt" onclick="answer(this,'wrong','q3card')">🗑️ In the general waste bin</button>
+            <button class="quiz-opt" onclick="answer(this,'wrong','q3card')">♻️ In the recyclable bin</button>
+            <button class="quiz-opt" onclick="answer(this,'correct','q3card')">☢️ To a hazardous waste drop-off point</button>
+            <button class="quiz-opt" onclick="answer(this,'wrong','q3card')">🌿 In the organic bin</button>
+          </div>
+          <div class="quiz-feedback qf-correct" id="q3-correct">✅ Correct! +50 points! Batteries contain toxic chemicals. Always take them to a designated hazardous drop-off.</div>
+          <div class="quiz-feedback qf-wrong" id="q3-wrong">❌ Batteries are hazardous! They belong at a ☢️ hazardous waste collection point.</div>
+        </div>
+
+        <div class="quiz-card" id="q4card">
+          <div class="quiz-q">4. Vegetable peels from cooking should go in...</div>
+          <div class="quiz-options">
+            <button class="quiz-opt" onclick="answer(this,'correct','q4card')">🌿 Organic / compost bin</button>
+            <button class="quiz-opt" onclick="answer(this,'wrong','q4card')">♻️ Recyclable bin</button>
+            <button class="quiz-opt" onclick="answer(this,'wrong','q4card')">🗑️ General waste</button>
+            <button class="quiz-opt" onclick="answer(this,'wrong','q4card')">☢️ Hazardous bin</button>
+          </div>
+          <div class="quiz-feedback qf-correct" id="q4-correct">✅ Correct! +50 points! Food waste like vegetable peels are perfect for the organic bin and composting.</div>
+          <div class="quiz-feedback qf-wrong" id="q4-wrong">❌ Vegetable peels are organic waste. They go in the 🌿 Organic / compost bin.</div>
+        </div>
+
+        <div class="points-tracker">
+          <div>
+            <div class="pts-label">Points from Quiz</div>
+            <div class="pts-score" id="quizPoints">0</div>
+          </div>
+          <div style="text-align:right">
+            <div style="color:#8fa88a;font-size:0.82rem">Questions answered</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#e5f5e0" id="questionsAnswered">0 / 4</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Waste Identifier -->
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:20px;padding:40px;margin-bottom:64px">
+        <div class="section-label" style="margin-bottom:14px">AI Tool</div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--dark);margin-bottom:12px">AI Waste Identifier</h2>
+        <p style="color:var(--muted);margin-bottom:28px">Type the name of a waste item and our AI will tell you which bin it belongs in.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <input type="text" id="wasteInput" placeholder="e.g. old newspaper, apple core, battery..." style="flex:1;min-width:220px;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.92rem;outline:none" onkeydown="if(event.key==='Enter')identifyWaste()"/>
+          <button onclick="identifyWaste()" class="btn-primary" style="border:none;cursor:pointer">Identify →</button>
+        </div>
+        <div id="wasteResult" style="display:none;margin-top:20px;padding:18px 24px;border-radius:12px;font-weight:600;font-size:0.95rem"></div>
+      </div>
+
+      <!-- Rewards -->
+      <div class="rewards-section">
+        <div class="section-label" style="margin-bottom:14px">Reward Store</div>
+        <h2>Redeem Your Eco-Points</h2>
+        <div class="rewards-grid">
+          <div class="reward-card">
+            <div class="reward-icon">🎫</div>
+            <div class="reward-pts">200 pts</div>
+            <h4>Priority Pickup</h4>
+            <p>Skip the queue — get your waste collected within 24 hours.</p>
+            <button onclick="redeemReward('Priority Pickup',200)" style="margin-top:14px;width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Redeem</button>
+          </div>
+          <div class="reward-card">
+            <div class="reward-icon">🌱</div>
+            <div class="reward-pts">500 pts</div>
+            <h4>Eco Starter Kit</h4>
+            <p>Receive a free home composting starter kit delivered to your door.</p>
+            <button onclick="redeemReward('Eco Starter Kit',500)" style="margin-top:14px;width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Redeem</button>
+          </div>
+          <div class="reward-card">
+            <div class="reward-icon">🏅</div>
+            <div class="reward-pts">1000 pts</div>
+            <h4>Green Champion Badge</h4>
+            <p>Official recognition as a neighborhood recycling champion — featured on the leaderboard.</p>
+            <button onclick="redeemReward('Green Champion Badge',1000)" style="margin-top:14px;width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Redeem</button>
+          </div>
+          <div class="reward-card">
+            <div class="reward-icon">🛒</div>
+            <div class="reward-pts">750 pts</div>
+            <h4>Market Voucher</h4>
+            <p>BDT 150 voucher redeemable at partner eco-friendly stores in Dhaka.</p>
+            <button onclick="redeemReward('Market Voucher',750)" style="margin-top:14px;width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Redeem</button>
+          </div>
+          <div class="reward-card">
+            <div class="reward-icon">📱</div>
+            <div class="reward-pts">300 pts</div>
+            <h4>App Premium Month</h4>
+            <p>One month of EcoTrack Premium with advanced analytics and priority support.</p>
+            <button onclick="redeemReward('App Premium',300)" style="margin-top:14px;width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Redeem</button>
+          </div>
+          <div class="reward-card">
+            <div class="reward-icon">🌳</div>
+            <div class="reward-pts">400 pts</div>
+            <h4>Tree Planting</h4>
+            <p>Donate your points to plant a tree in Dhaka's reforestation initiative.</p>
+            <button onclick="redeemReward('Tree Planting',400)" style="margin-top:14px;width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Redeem</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Ready to Track Your Impact?</h2>
+        <p>See your eco-points, routes, and community stats on the dashboard.</p>
+        <div class="cta-actions">
+          <a href="dashboard.html" class="btn-primary">Open Dashboard</a>
+          <a href="contact.html" class="btn-ghost-white">Get Help</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="logo-icon">♻</span>
+          <span class="footer-name">EcoTrack</span>
+          <p>Smart Waste Management Platform for Urban Bangladesh</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h5>Pages</h5>
+            <a href="index.html">Home</a>
+            <a href="features.html">Features</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="recycle.html">Recycle</a>
+            <a href="contact.html">Contact</a>
+          </div>
+          <div class="footer-col">
+            <h5>Research</h5>
+            <a href="#">Research Paper</a>
+            <a href="#">Pilot Study</a>
+          </div>
+          <div class="footer-col">
+            <h5>Institution</h5>
+            <a href="#">University</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 EcoTrack | Developed by MD READ HOSSAIN - IUB CSE</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    let totalEcoPoints = 250;
+    let quizPointsEarned = 0;
+    let questionsAnswered = 0;
+
+    function answer(btn, result, cardId) {
+      const card = document.getElementById(cardId);
+      const opts = card.querySelectorAll('.quiz-opt');
+      opts.forEach(o => o.disabled = true);
+      btn.classList.add(result);
+      const qNum = cardId.replace('q','').replace('card','');
+      const correctFb = document.getElementById('q' + qNum + '-correct');
+      const wrongFb = document.getElementById('q' + qNum + '-wrong');
+      correctFb.style.display = 'none';
+      wrongFb.style.display = 'none';
+      if (result === 'correct') {
+        correctFb.style.display = 'block';
+        quizPointsEarned += 50;
+        totalEcoPoints += 50;
+        document.getElementById('quizPoints').textContent = quizPointsEarned;
+        document.getElementById('totalPoints').textContent = totalEcoPoints;
+      } else {
+        wrongFb.style.display = 'block';
+      }
+      questionsAnswered++;
+      document.getElementById('questionsAnswered').textContent = questionsAnswered + ' / 4';
+      document.getElementById('quizScore').textContent = questionsAnswered;
+    }
+
+    const wasteDB = {
+      'newspaper': { bin: '♻️ Recyclable Bin', color: '#16a34a', tip: 'Keep it dry! Wet newspaper goes in general waste.' },
+      'plastic bottle': { bin: '♻️ Recyclable Bin', color: '#16a34a', tip: 'Rinse before recycling!' },
+      'apple': { bin: '🌿 Organic Bin', color: '#84cc16', tip: 'Fruit scraps are great for composting.' },
+      'apple core': { bin: '🌿 Organic Bin', color: '#84cc16', tip: 'Perfect for the compost!' },
+      'battery': { bin: '☢️ Hazardous Waste', color: '#dc2626', tip: 'Take to a designated drop-off point only.' },
+      'batteries': { bin: '☢️ Hazardous Waste', color: '#dc2626', tip: 'Never put in regular bins.' },
+      'cardboard': { bin: '♻️ Recyclable Bin', color: '#16a34a', tip: 'Flatten it first, and make sure it\'s not greasy.' },
+      'pizza box': { bin: '🗑️ General Waste (if greasy)', color: '#64748b', tip: 'If the box is greasy, it can\'t be recycled.' },
+      'food scraps': { bin: '🌿 Organic Bin', color: '#84cc16', tip: 'Food waste belongs in the organic bin.' },
+      'glass bottle': { bin: '♻️ Recyclable Bin', color: '#16a34a', tip: 'Rinse clean. Remove lids.' },
+      'medicine': { bin: '☢️ Hazardous Waste', color: '#dc2626', tip: 'Never flush! Take to pharmacy drop-offs.' },
+      'styrofoam': { bin: '🗑️ General Waste', color: '#64748b', tip: 'Styrofoam is not recyclable in most centers.' },
+      'old phone': { bin: '☢️ E-Waste Collection', color: '#dc2626', tip: 'Electronic waste needs special handling.' },
+      'leaves': { bin: '🌿 Organic Bin', color: '#84cc16', tip: 'Garden waste goes to organic/compost.' },
+      'tin can': { bin: '♻️ Recyclable Bin', color: '#16a34a', tip: 'Rinse the can before recycling.' },
+    };
+
+    function identifyWaste() {
+      const input = document.getElementById('wasteInput').value.toLowerCase().trim();
+      const result = document.getElementById('wasteResult');
+      let found = null;
+      for (const [key, val] of Object.entries(wasteDB)) {
+        if (input.includes(key)) { found = val; break; }
+      }
+      result.style.display = 'block';
+      if (found) {
+        result.style.background = found.color + '18';
+        result.style.border = '1px solid ' + found.color + '55';
+        result.style.color = found.color;
+        result.innerHTML = `<strong>${found.bin}</strong><br><span style="font-weight:400;font-size:0.88rem">${found.tip}</span><br><span style="font-size:0.78rem;opacity:0.7;margin-top:6px;display:block">+10 eco-points earned!</span>`;
+        totalEcoPoints += 10;
+        document.getElementById('totalPoints').textContent = totalEcoPoints;
+      } else {
+        result.style.background = '#f1f5f9';
+        result.style.border = '1px solid #cbd5e1';
+        result.style.color = '#475569';
+        result.innerHTML = 'Item not found in database. Try searching for: plastic bottle, apple core, battery, newspaper, cardboard...';
+      }
+    }
+
+    const catInfo = {
+      organic: { title: '🌿 Organic Waste', color: '#16a34a', desc: 'Organic waste decomposes naturally and can be composted into nutrient-rich soil. Examples: food scraps, vegetable peels, fruit, coffee grounds, teabags, garden clippings, eggshells.' },
+      recyclable: { title: '♻️ Recyclable Waste', color: '#2563eb', desc: 'Materials that can be processed and reused to make new products. Must be clean and dry. Examples: plastic bottles, cardboard, paper, glass bottles, tin cans, aluminum foil.' },
+      hazardous: { title: '☢️ Hazardous Waste', color: '#dc2626', desc: 'Dangerous materials that can cause environmental or health harm if improperly disposed. Must go to special collection points. Examples: batteries, paint, cleaning chemicals, medicines, electronics, fluorescent bulbs.' },
+      general: { title: '🗑️ General Waste', color: '#64748b', desc: 'Waste that does not fit into the other categories — non-recyclable, non-hazardous everyday items. Examples: dirty plastic bags, styrofoam, broken ceramics, diapers, toothbrushes, used tissues.' }
+    };
+
+    function showCatInfo(type) {
+      const box = document.getElementById('catInfoBox');
+      const info = catInfo[type];
+      box.style.display = 'block';
+      box.style.borderLeft = '4px solid ' + info.color;
+      box.innerHTML = `<h3 style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--dark);margin-bottom:8px">${info.title}</h3><p style="color:var(--muted);line-height:1.8">${info.desc}</p>`;
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function redeemReward(name, pts) {
+      if (totalEcoPoints >= pts) {
+        totalEcoPoints -= pts;
+        document.getElementById('totalPoints').textContent = totalEcoPoints;
+        alert(`✅ "${name}" redeemed successfully! You spent ${pts} points.\nRemaining balance: ${totalEcoPoints} points.`);
+      } else {
+        alert(`❌ Insufficient eco-points! You need ${pts} points but only have ${totalEcoPoints}.\n\nEarn more by completing quizzes and recycling correctly!`);
+      }
+    }
+  </script>
+</body>
+</html>
